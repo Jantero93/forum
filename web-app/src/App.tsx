@@ -1,15 +1,10 @@
-import Navbar from './components/Navbar';
 import { Outlet } from 'react-router-dom';
+import NavbarLayout from './components/NavbarLayout';
 
-const App = () => {
-  return (
-    <>
-      <Navbar />
-      <div className="min-h-screen flex justify-center items-center bg-stone-600">
-        <Outlet />
-      </div>
-    </>
-  );
-};
+const App = () => (
+  <NavbarLayout>
+    <Outlet />
+  </NavbarLayout>
+);
 
 export default App;
