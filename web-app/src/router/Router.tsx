@@ -1,11 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import App from '~/App';
+import ErrorPage from '~/pages/ErrorPage';
 
 const Test = () => <div>MORON MORON</div>;
-const ErrorPage = () => (
-  <p className="flex justify-center text-3xl mt-5">NOT FOUND 404</p>
-);
 
 export const router = createBrowserRouter([
   {

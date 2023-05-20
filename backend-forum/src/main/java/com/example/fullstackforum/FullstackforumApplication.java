@@ -1,13 +1,13 @@
-package com.forum.javaforumbackend;
+package com.example.fullstackforum;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JavaforumbackendApplication {
+public class FullstackforumApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JavaforumbackendApplication.class, args);
+		SpringApplication.run(FullstackforumApplication.class, args);
 	}
 
 }
