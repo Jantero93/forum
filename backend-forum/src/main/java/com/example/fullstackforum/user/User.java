@@ -20,6 +20,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String username;
+
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

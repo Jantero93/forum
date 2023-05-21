@@ -13,7 +13,11 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
 
-    public List<Board> getAllBoards() {
-        return boardRepository.findAll();
+    public List<BoardDto> getAllBoards() {
+        List<Board> boards = boardRepository.findAll();
+
+        return boards.stream().map(
+                x -> new BoardDto(x.getId(), x.getBoard(), x.getAdjective())
+        ).toList();
     }
 }
