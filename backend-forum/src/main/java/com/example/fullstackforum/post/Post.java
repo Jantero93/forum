@@ -3,16 +3,17 @@ package com.example.fullstackforum.post;
 import com.example.fullstackforum.topic.Topic;
 import com.example.fullstackforum.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "posts")
 public class Post {
 
     @Id
@@ -26,11 +27,11 @@ public class Post {
 
     private Integer votes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Topic topic;
 }

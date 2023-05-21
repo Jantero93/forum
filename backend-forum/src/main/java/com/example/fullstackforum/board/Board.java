@@ -2,16 +2,17 @@ package com.example.fullstackforum.board;
 
 import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "boards")
 public class Board {
 
     @Id
@@ -24,7 +25,7 @@ public class Board {
     @Column(length = 1023)
     private String adjective;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<Topic> topics;
 
 }

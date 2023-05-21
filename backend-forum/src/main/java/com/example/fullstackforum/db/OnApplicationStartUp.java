@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class OnApplicationStartUp {
@@ -22,7 +21,6 @@ public class OnApplicationStartUp {
 
     private static final Logger logger = LoggerFactory.getLogger(OnApplicationStartUp.class);
 
-
     public OnApplicationStartUp(BoardRepository boardRepository, TopicRepository topicRepository) {
         this.boardRepository = boardRepository;
         this.topicRepository = topicRepository;
@@ -30,7 +28,7 @@ public class OnApplicationStartUp {
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        
+
         if (!boardRepository.findAll().isEmpty()) {
             logger.info("Board repository not empty, skipping data initialization");
             return;
@@ -46,18 +44,30 @@ public class OnApplicationStartUp {
         board2.setBoard("Coding");
         board2.setAdjective("Cat cat cat cat");
 
-        var boards = Arrays.asList(board1, board2);
+        var boardList = Arrays.asList(board1, board2);
+
+        var dbBoards = boardRepository.saveAll(boardList);
+        var firstDbBoard = dbBoards.get(0);
 
         var topic1 = new Topic();
         topic1.setTopicName("this is topic");
         topic1.setCreated(new Date());
+        topic1.setBoard(firstDbBoard);
         topic1.setPosts(null);
         topic1.setUser(null);
 
-        topicRepository.save(topic1);
+        var dbTopic = topicRepository.save(topic1);
 
-        board1.setTopics(Arrays.asList(topic1));
+        firstDbBoard.setTopics(Arrays.asList(dbTopic));
 
-        boardRepository.saveAll(boards);
+        boardRepository.save(firstDbBoard);
+
+    //    var testMoro = boardRepository.findAll();
+
+    //    testMoro.forEach(x -> logger.info(x.toString()));
+
+        //  var getTpåocs = testMoro.stream().filter(x -> x.getTopics() != null);
+
+        logger.info("test");
     }
 }

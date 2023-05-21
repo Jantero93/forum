@@ -1,4 +1,5 @@
 import { useRouteError } from 'react-router-dom';
+import NavbarLayout from '~/components/NavbarLayout';
 
 type ErrorMsg = { message: string; statusText: string; data: string };
 
@@ -8,11 +9,13 @@ const ErrorPage = () => {
   console.log('error', error);
 
   return (
-    <div className="flex justify-center mt-4 text-4xl">
-      <p>
-        <i>{error.data || error.message || error.statusText}</i>
-      </p>
-    </div>
+    <NavbarLayout>
+      <div className="flex text-4xl text-purple-300">
+        <p>
+          <i>{error.data || error.message || error.statusText}</i>
+        </p>
+      </div>
+    </NavbarLayout>
   );
 };
 
