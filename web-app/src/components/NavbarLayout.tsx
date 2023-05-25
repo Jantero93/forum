@@ -1,18 +1,25 @@
 import { Link } from 'react-router-dom';
 import Logo from '../assets/WebSiteLogo.png';
+import { useState } from 'react';
+
+import SignUpModal from './SignUpModal';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
+const boards = ['Kissat', 'Koirat', 'Tietokoneet'];
+
 const NavbarLayout = ({ children }: LayoutProps) => {
-  const boards = ['Kissat', 'Koirat', 'Tietokoneet'];
+  const [showSignIn, setShowSignIn] = useState(false);
+
+  const handleSignInModalClick = () => setShowSignIn(true);
 
   return (
-    <div className="flex items-center justify-between min-h-screen bg-slate-700">
+    <div className="flex items-center min-h-screen bg-slate-700">
       <aside
         id="default-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="top-0 left-0 z-40 w-64 h-screen mr-auto bg-green-400 sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="flex flex-col h-full px-3 py-4 overflow-y-auto bg-gray-800">
@@ -23,22 +30,29 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           </div>
           <form className="px-4">
             <input
-              className="w-full px-1 mb-2 border rounded appearance-none mshadow"
+              className="w-full p-1 mb-2 border rounded appearance-none mshadow"
               name="Username"
               type="text"
               placeholder="Username"
             />
             <input
-              className="w-full px-2 mb-2 border rounded appearance-none mshadow"
+              className="w-full p-1 mb-2 border rounded appearance-none mshadow"
               name="Passowrd"
               type="text"
               placeholder="Password"
             />
 
-            <button className="px-4 py-1 mb-3 font-bold rounded hover:text-blue-800 bg-slate-300">
+            <button className="px-3 py-2 mb-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700">
               Sign in
             </button>
-            <p className="text-sm text-sky-400">No account? Create one!</p>
+            <p
+              aria-hidden={true}
+              className="text-sm text-sky-400 hover:text-purple-300 hover:cursor-pointer"
+              onClick={handleSignInModalClick}
+              onKeyDown={handleSignInModalClick}
+            >
+              No account? Create one!
+            </p>
           </form>
           <ul className="pt-6 space-y-2 font-medium">
             {boards.map((board) => (
@@ -56,7 +70,8 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           </ul>
         </div>
       </aside>
-      {children}
+      <div className="bg-blue-300 ">{children}</div>
+      {showSignIn && <SignUpModal setShowModal={setShowSignIn} />}
     </div>
   );
 };
