@@ -4,6 +4,7 @@ import com.example.fullstackforum.board.Board;
 import com.example.fullstackforum.board.BoardRepository;
 import com.example.fullstackforum.topic.Topic;
 import com.example.fullstackforum.topic.TopicRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,12 +15,11 @@ import java.util.Arrays;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class OnApplicationStartUp {
 
     private final BoardRepository boardRepository;
     private final TopicRepository topicRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(OnApplicationStartUp.class);
 
     public OnApplicationStartUp(BoardRepository boardRepository, TopicRepository topicRepository) {
         this.boardRepository = boardRepository;
@@ -30,11 +30,11 @@ public class OnApplicationStartUp {
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
         if (!boardRepository.findAll().isEmpty()) {
-            logger.info("Board repository not empty, skipping data initialization");
+            log.info("Board repository not empty, skipping data initialization");
             return;
         }
 
-        logger.info("Board repository empty, initializing with test data...");
+        log.info("Board repository empty, initializing with test data...");
 
         var board1 = new Board();
         board1.setBoard("Car");
@@ -61,13 +61,5 @@ public class OnApplicationStartUp {
         firstDbBoard.setTopics(Arrays.asList(dbTopic));
 
         boardRepository.save(firstDbBoard);
-
-    //    var testMoro = boardRepository.findAll();
-
-    //    testMoro.forEach(x -> logger.info(x.toString()));
-
-        //  var getTpåocs = testMoro.stream().filter(x -> x.getTopics() != null);
-
-        logger.info("test");
     }
 }

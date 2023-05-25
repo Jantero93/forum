@@ -1,10 +1,20 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 
 type SignUpModalProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    console.log('test submit');
+    console.log('username', username);
+    console.log('password', password);
+  };
+
   return (
     <div
       id="sign-in-modal"
@@ -42,6 +52,7 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
                 <input
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:outline focus:outline-2 focus:outline-blue-400"
                   placeholder="Username"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div>
@@ -49,10 +60,14 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  placeholder-gray-400 focus:outline focus:outline-2 focus:outline-blue-400"
                   type="password"
                   placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
-              <button className="text-white font-medium mr-2 text-sm px-5 py-2.5 text-center bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700">
+              <button
+                className="text-white font-medium mr-2 text-sm px-5 py-2.5 text-center bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700"
+                onClick={handleSubmit}
+              >
                 Submit
               </button>
               <button
