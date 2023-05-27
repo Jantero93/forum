@@ -1,24 +1,32 @@
 package com.example.fullstackforum.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
 public class UserController {
 
-    public UserController() {}
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/user")
-    void createUser(@RequestBody UserDto userDto) {
+    HashMap<String, Long> createUser(@RequestBody UserDto userDto) {
         log.info("Creating new user: " + userDto);
+        var userId = userService.createUser(userDto.username(), userDto.password());
 
-        System.out.println("");
+        var response = new HashMap<String, Long>();
+        response.put("userId", userId);
+
+        return response;
     }
 }

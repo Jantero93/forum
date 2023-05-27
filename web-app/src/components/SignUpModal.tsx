@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 type SignUpModalProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;

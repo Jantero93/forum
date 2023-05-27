@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,10 +27,11 @@ public class Topic {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
+    @Column(nullable = false)
     private String topicName;
 
     @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_Topics_Boards_Board_Id"))
