@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type ApiResponse<T> = {
   data?: T;
   loading: boolean;
-  statusCode?: number;
-  statusText: string;
   error?: any;
+  callApi: () => void;
 };
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -16,35 +15,35 @@ const useFetch = <T,>(
   payload?: any
 ): ApiResponse<T> => {
   const [data, setData] = useState<T | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  const [statusCode, setStatusCode] = useState<number | undefined>(undefined);
-  const [statusText, setStatusText] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(undefined);
 
-  useEffect(() => {
+  const callApi = useCallback(() => {
+    setLoading(true);
+
     const apiCall = async () => {
-      const apiResponse = await fetch(url, {
-        body: payload,
-        method
-      });
-
       try {
-        const { status, statusText } = apiResponse;
-        const data = await apiResponse.json();
+        const apiResponse = await fetch(url, {
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method
+        });
 
-        setStatusCode(status);
-        setStatusText(statusText);
+        const data = await apiResponse.json();
         setData(data as T);
-        setLoading(false);
       } catch (e) {
         setError(e);
+      } finally {
+        setLoading(false);
       }
     };
 
     apiCall();
-  }, [url, method, payload]);
+  }, [method, url, payload]);
 
-  return { data, loading, statusCode, statusText, error };
+  return { data, loading, error, callApi };
 };
 
 export default useFetch;
