@@ -1,18 +1,23 @@
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useFetch } from '~/hooks/useFetch';
+import env from '~/util/env';
 
 type SignUpModalProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+  const url = `${env.API_URL}/auth/register` as const;
+  const payload = { email, password } as const;
+
+  const { callApi, data } = useFetch(url, 'POST', payload, false);
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    console.log('test submit');
-    console.log('username', username);
-    console.log('password', password);
+    callApi();
   };
 
   return (
@@ -52,7 +57,7 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
                 <input
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:outline focus:outline-2 focus:outline-blue-400"
                   placeholder="Username"
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>

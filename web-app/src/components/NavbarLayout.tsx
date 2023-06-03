@@ -31,9 +31,9 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           <form className="px-4">
             <input
               className="w-full p-1 mb-2 border rounded appearance-none mshadow"
-              name="Username"
+              name="Email"
               type="text"
-              placeholder="Username"
+              placeholder="Email"
             />
             <input
               className="w-full p-1 mb-2 border rounded appearance-none mshadow"

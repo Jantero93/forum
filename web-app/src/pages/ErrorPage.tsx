@@ -6,8 +6,6 @@ type ErrorMsg = { message: string; statusText: string; data: string };
 const ErrorPage = () => {
   const error = useRouteError() as ErrorMsg;
 
-  console.log('error', error);
-
   return (
     <NavbarLayout>
       <div className="flex text-4xl text-purple-300">
