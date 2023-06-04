@@ -1,23 +1,34 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useFetch } from '~/hooks/useFetch';
+import { useLocalStorage } from '~/hooks/useLocalStorage';
 import env from '~/util/env';
 
 type SignUpModalProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
 };
 
+type RegisterResponse = { token: string };
+
 const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setLocalStorageItem } = useLocalStorage('JWT_TOKEN');
 
   const url = `${env.API_URL}/auth/register` as const;
   const payload = { email, password } as const;
 
-  const { callApi, data } = useFetch(url, 'POST', payload, false);
+  const { callApi, response } = useFetch<RegisterResponse>(
+    url,
+    'POST',
+    payload,
+    false
+  );
 
   const handleSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     callApi();
+
+    if (response?.token) setLocalStorageItem(response.token);
   };
 
   return (

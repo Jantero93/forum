@@ -1,20 +1,19 @@
-import { Dispatch, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-type UseLocalStorage<T> = {
-  value: T | undefined;
-  setValue: Dispatch<React.SetStateAction<T | undefined>>;
-};
+type LocalStorageKey = 'JWT_TOKEN';
 
-export const useLocalStorage = <T>(key: string): UseLocalStorage<T> => {
+export const useLocalStorage = <T>(key: LocalStorageKey) => {
   const localStorageString = localStorage.getItem(key);
 
-  const [value, setValue] = useState<T | undefined>(
-    localStorageString ? JSON.parse(localStorageString) : undefined
+  const [localStorageItem, setLocalStorageItem] = useState<T | undefined>(
+    localStorageString ? (JSON.parse(localStorageString) as T) : undefined
   );
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+    if (localStorageItem) {
+      localStorage.setItem(key, JSON.stringify(localStorageItem));
+    }
+  }, [key, localStorageItem]);
 
-  return { value, setValue };
+  return { localStorageItem, setLocalStorageItem };
 };
