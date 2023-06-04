@@ -25,7 +25,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        log.info("Registering new user: {}", request.getEmail());
+        log.info("Registering request: " + request);
 
         var userDb = userRepository.findByEmail(request.getEmail());
 
@@ -52,6 +52,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationReqeust request) {
+        log.info("Authentication request: {}", request);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

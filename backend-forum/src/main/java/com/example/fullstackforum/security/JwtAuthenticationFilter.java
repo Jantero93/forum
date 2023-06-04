@@ -5,22 +5,26 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private static final String AUTHORIZATION_HEADER = "authorization";
 
     @Override
     protected void doFilterInternal(
@@ -28,11 +32,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
         final String jwtToken;
         final String userEmail;
 
+        var allHeaders = request.getHeaderNames();
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.warn("{} header missing or no 'Bearer ' prefix ", AUTHORIZATION_HEADER);
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,6 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                log.info("Updated securityContext successfully to user: {}", userDetails.getUsername());
             }
         }
 
