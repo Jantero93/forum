@@ -3,17 +3,44 @@ import Logo from '../assets/WebSiteLogo.png';
 import { useState } from 'react';
 
 import SignUpModal from './SignUpModal';
+import { useFetch } from '~/hooks/useFetch';
+import env from '~/util/env';
+import { useLocalStorage } from '~/hooks/useLocalStorage';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
+type LoginResponse = { token: string };
+
 const boards = ['Kissat', 'Koirat', 'Tietokoneet'];
 
 const NavbarLayout = ({ children }: LayoutProps) => {
   const [showSignIn, setShowSignIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { setLocalStorageItem } = useLocalStorage('JWT_TOKEN');
+
+  const url = env.API_URL + '/auth/authenticate';
+  const payload = { email, password };
+
+  const { response, callApi } = useFetch<LoginResponse>(
+    url,
+    'POST',
+    payload,
+    false
+  );
 
   const handleSignInModalClick = () => setShowSignIn(true);
+
+  const handleLogInClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    callApi();
+
+    if (response?.token) {
+      setLocalStorageItem(response.token);
+    }
+  };
 
   return (
     <div className="flex items-center min-h-screen bg-slate-700">
@@ -34,15 +61,20 @@ const NavbarLayout = ({ children }: LayoutProps) => {
               name="Email"
               type="text"
               placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               className="w-full p-1 mb-2 border rounded appearance-none mshadow"
               name="Passowrd"
               type="text"
               placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className="px-3 py-2 mb-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700">
+            <button
+              className="px-3 py-2 mb-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700"
+              onClick={handleLogInClick}
+            >
               Sign in
             </button>
             <p

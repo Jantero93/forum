@@ -20,7 +20,9 @@ export const useFetch = <T>(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(undefined);
   const [refresh, setRefresh] = useState(fetchImmediately);
-  const { localStorageItem } = useLocalStorage('JWT_TOKEN');
+
+  const { localStorageItem: authorizationHeader } =
+    useLocalStorage<string>('JWT_TOKEN');
 
   useEffect(() => {
     const fetchResponse = async () => {
@@ -29,8 +31,8 @@ export const useFetch = <T>(
 
       const headers: HeadersInit = {};
 
-      if (localStorageItem) {
-        headers['authorization'] = localStorageItem as string;
+      if (authorizationHeader) {
+        headers['authorization'] = authorizationHeader;
       }
 
       if (method === 'POST' || method === 'PUT') {

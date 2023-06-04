@@ -28,7 +28,9 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
     e.preventDefault();
     callApi();
 
-    if (response?.token) setLocalStorageItem(response.token);
+    if (response?.token) {
+      setLocalStorageItem(response.token);
+    }
   };
 
   return (

@@ -7,7 +7,6 @@ import com.example.fullstackforum.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,9 +41,11 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-        userRepository.save(user);
+        var savedUser = userRepository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
+
+        log.info("User registration successful: {}", savedUser.getEmail());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -65,6 +66,8 @@ public class AuthenticationService {
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);
+
+        log.info("Authentication successful, email: {}", request.getEmail());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
