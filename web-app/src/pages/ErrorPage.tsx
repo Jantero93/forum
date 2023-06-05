@@ -1,5 +1,5 @@
 import { useRouteError } from 'react-router-dom';
-import NavbarLayout from '~/components/NavbarLayout';
+import NavbarLayout from '~/components/navbar/NavbarLayout';
 
 type ErrorMsg = { message: string; statusText: string; data: string };
 

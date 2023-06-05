@@ -1,19 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type LocalStorageKey = 'JWT_TOKEN';
 
 export const useLocalStorage = <T>(key: LocalStorageKey) => {
-  const localStorageString = localStorage.getItem(key);
+  const [localStorageItem, setLocalStorageValue] = useState(() => {
+    const value = localStorage.getItem(key);
 
-  const [localStorageItem, setLocalStorageItem] = useState<T | undefined>(
-    localStorageString ? (JSON.parse(localStorageString) as T) : undefined
-  );
+    if (!value) return null;
 
-  useEffect(() => {
-    if (localStorageItem) {
-      localStorage.setItem(key, JSON.stringify(localStorageItem));
+    return JSON.parse(value) as T;
+  });
+
+  /**
+   * @param value Value to set local storage. Null value delete entry from storage
+   */
+  const setLocalStorageItem = (value: T | null) => {
+    if (value === null) {
+      localStorage.removeItem(key);
+      setLocalStorageValue(null);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+      setLocalStorageValue(value);
     }
-  }, [key, localStorageItem]);
+  };
 
   return { localStorageItem, setLocalStorageItem };
 };

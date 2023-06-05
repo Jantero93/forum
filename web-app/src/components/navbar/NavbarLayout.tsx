@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import Logo from '../assets/WebSiteLogo.png';
+import Logo from '~/assets/WebSiteLogo.png';
 import { useState } from 'react';
 
-import SignUpModal from './SignUpModal';
+import SignUpModal from '~/components/SignUpModal';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
 import { useLocalStorage } from '~/hooks/useLocalStorage';
+import LogInForm from './LogInForm';
+import SignedInCard from './SignedInCard';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -19,7 +21,8 @@ const NavbarLayout = ({ children }: LayoutProps) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setLocalStorageItem } = useLocalStorage('JWT_TOKEN');
+  const { localStorageItem, setLocalStorageItem } =
+    useLocalStorage('JWT_TOKEN');
 
   const url = env.API_URL + '/auth/authenticate';
   const payload = { email, password };
@@ -42,6 +45,8 @@ const NavbarLayout = ({ children }: LayoutProps) => {
     }
   };
 
+  const handleLogOutClick = () => setLocalStorageItem(null);
+
   return (
     <div className="flex items-center min-h-screen bg-slate-700">
       <aside
@@ -55,37 +60,18 @@ const NavbarLayout = ({ children }: LayoutProps) => {
               <img src={Logo} alt="logo" />
             </Link>
           </div>
-          <form className="px-4">
-            <input
-              className="w-full p-1 mb-2 border rounded appearance-none mshadow"
-              name="Email"
-              type="text"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              className="w-full p-1 mb-2 border rounded appearance-none mshadow"
-              name="Passowrd"
-              type="text"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
 
-            <button
-              className="px-3 py-2 mb-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:text-slate-200 hover:bg-blue-700"
-              onClick={handleLogInClick}
-            >
-              Sign in
-            </button>
-            <p
-              aria-hidden={true}
-              className="text-sm text-sky-400 hover:text-purple-300 hover:cursor-pointer"
-              onClick={handleSignInModalClick}
-              onKeyDown={handleSignInModalClick}
-            >
-              No account? Create one!
-            </p>
-          </form>
+          {!localStorageItem ? (
+            <LogInForm
+              setEmail={setEmail}
+              setPassword={setPassword}
+              handleLogInClick={handleLogInClick}
+              handleSignInModalClick={handleSignInModalClick}
+            />
+          ) : (
+            <SignedInCard handleLogOutClick={handleLogOutClick} />
+          )}
+
           <ul className="pt-6 space-y-2 font-medium">
             {boards.map((board) => (
               <li key={board}>

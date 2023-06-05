@@ -49,6 +49,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .email(savedUser.getEmail())
                 .build();
     }
 
@@ -71,6 +72,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .email(user.getEmail())
                 .build();
     }
 }
