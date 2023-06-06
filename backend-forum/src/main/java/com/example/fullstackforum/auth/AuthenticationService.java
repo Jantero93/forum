@@ -29,7 +29,7 @@ public class AuthenticationService {
         var userDb = userRepository.findByEmail(request.getEmail());
 
         if (userDb.isPresent()) {
-            log.error("User already registered: {}", request.getEmail());
+            log.error("Creating new user failed, user exists already: {}", request.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already registered");
         }
 
@@ -43,9 +43,11 @@ public class AuthenticationService {
 
         var savedUser = userRepository.save(user);
 
+        log.info("User registration successful: {}", savedUser.getEmail());
+
         var jwtToken = jwtService.generateToken(user);
 
-        log.info("User registration successful: {}", savedUser.getEmail());
+        log.info("JWT generated for user: {}", request.getEmail());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -56,19 +58,25 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationReqeust request) {
         log.info("Authentication request: {}", request);
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            log.info("Authentication successful, email: {}", request.getEmail());
+        } catch (Exception e) {
+            log.info("Authentication failed for user: {}", request.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or Password, username: " + request.getEmail());
+        }
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);
 
-        log.info("Authentication successful, email: {}", request.getEmail());
+        log.info("JWT generated for user: {}", request.getEmail());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
