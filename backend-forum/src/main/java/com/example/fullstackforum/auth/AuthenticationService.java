@@ -29,7 +29,7 @@ public class AuthenticationService {
         var userDb = userRepository.findByEmail(request.getEmail());
 
         if (userDb.isPresent()) {
-            log.error("Creating new user failed, user exists already: {}", request.getEmail());
+            log.warn("Creating new user failed, user exists already: {}", request.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already registered");
         }
 
@@ -68,7 +68,7 @@ public class AuthenticationService {
             log.info("Authentication successful, email: {}", request.getEmail());
         } catch (Exception e) {
             log.info("Authentication failed for user: {}", request.getEmail());
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or Password, username: " + request.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
 
         var user = userRepository.findByEmail(request.getEmail())
