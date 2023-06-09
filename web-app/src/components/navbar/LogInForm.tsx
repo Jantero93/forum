@@ -37,7 +37,7 @@ const LogInForm = ({
         Sign in
       </button>
       <p
-        aria-hidden={true}
+        aria-hidden
         className="text-sm text-sky-400 hover:text-purple-300 hover:cursor-pointer"
         onClick={handleSignInModalClick}
         onKeyDown={handleSignInModalClick}

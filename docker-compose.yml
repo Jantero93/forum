@@ -10,10 +10,29 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=java-forum
     ports:
-      - '5432:5432'
+      - "5432:5432"
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
-  recipe:
-    container_name: recipe_app
+  frontend:
+    image: "web-app"
+    container_name: "frontend"
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_API_URL: "http://localhost:8080/api"
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    container_name: backend
     build:
       context: ./backend-forum
       dockerfile: Dockerfile
@@ -26,3 +45,11 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - psql-db
+    networks:
+    - app-network
+
+networks:
+ app-network:
+
+volumes:
+  db-data:

@@ -1,5 +1,12 @@
+FROM maven:3.8.3 AS build
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+RUN mvn clean package -DskipTests
+
 FROM openjdk:17
 VOLUME /tmp
 EXPOSE 8080
-COPY target/fullstackforum-0.0.1-SNAPSHOT.jar recipe.jar
-ENTRYPOINT ["java","-jar","/recipe.jar"]
+ARG JAR_FILE=fullstackforum-0.0.1-SNAPSHOT.jar
+WORKDIR /opt/app
+COPY --from=build /usr/src/app/target/${JAR_FILE} /opt/app/
+ENTRYPOINT [ "java", "-jar", "fullstackforum-0.0.1-SNAPSHOT.jar" ]

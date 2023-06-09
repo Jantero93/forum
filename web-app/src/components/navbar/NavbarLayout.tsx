@@ -24,7 +24,7 @@ const NavbarLayout = ({ children }: LayoutProps) => {
   const { localStorageItem, setLocalStorageItem } =
     useLocalStorage('JWT_TOKEN');
 
-  const url = env.API_URL + '/auth/authenticate';
+  const url = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };
 
   const { response, callApi } = useFetch<LoginResponse>(
