@@ -90,8 +90,8 @@ const NavbarLayout = ({ children }: LayoutProps) => {
             ))}
           </ul>
         </div>
-        {showSignIn && <SignUpModal setShowModal={setShowSignIn} />}
       </nav>
+      {showSignIn && <SignUpModal setShowModal={setShowSignIn} />}
       <main className="flex flex-grow p-4 bg-slate-700 ">{children}</main>
     </div>
   );

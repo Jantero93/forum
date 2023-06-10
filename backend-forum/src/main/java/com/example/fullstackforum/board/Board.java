@@ -1,10 +1,11 @@
 package com.example.fullstackforum.board;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.fullstackforum.topic.Topic;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,5 +23,6 @@ public class Board {
 
     private String adjective;
 
-    // topics
+    @OneToMany(mappedBy = "board")
+    private List<Topic> topics = new ArrayList<>();
 }

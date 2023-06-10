@@ -15,13 +15,11 @@ export const useLocalStorage = <T>(key: LocalStorageKey) => {
    * @param value Value to set local storage. Null value delete entry from storage
    */
   const setLocalStorageItem = (value: T | null) => {
-    if (value === null) {
-      localStorage.removeItem(key);
-      setLocalStorageValue(null);
-    } else {
-      localStorage.setItem(key, JSON.stringify(value));
-      setLocalStorageValue(value);
-    }
+    value === null
+      ? localStorage.removeItem(key)
+      : localStorage.setItem(key, JSON.stringify(value));
+
+    setLocalStorageValue(value);
   };
 
   return { localStorageItem, setLocalStorageItem };

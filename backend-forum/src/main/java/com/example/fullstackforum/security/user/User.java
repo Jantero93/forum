@@ -1,6 +1,8 @@
 package com.example.fullstackforum.security.user;
 
+import com.example.fullstackforum.posts.Post;
 import com.example.fullstackforum.security.token.Token;
+import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +35,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user")
+    private List<Topic> topics;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

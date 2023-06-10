@@ -1,7 +1,7 @@
 FROM maven:3.8.3 AS build
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests --no-transfer-progress
 
 FROM openjdk:17
 VOLUME /tmp
