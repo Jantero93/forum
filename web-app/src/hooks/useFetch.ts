@@ -26,8 +26,9 @@ export const useFetch = <T>(
 
   useEffect(() => {
     const fetchResponse = async () => {
-      if (loading) return;
       if (!refresh) return;
+
+      setLoading(true);
 
       const headers: HeadersInit = {};
 

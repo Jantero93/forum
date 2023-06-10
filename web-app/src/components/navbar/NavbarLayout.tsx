@@ -8,14 +8,13 @@ import env from '~/util/env';
 import { useLocalStorage } from '~/hooks/useLocalStorage';
 import LogInForm from './LogInForm';
 import SignedInCard from './SignedInCard';
+import { BoardDto } from '~/data/boards/boadType';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
 type LoginResponse = { token: string };
-
-const boards = ['Kissat', 'Koirat', 'Tietokoneet'];
 
 const NavbarLayout = ({ children }: LayoutProps) => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -24,14 +23,18 @@ const NavbarLayout = ({ children }: LayoutProps) => {
   const { localStorageItem, setLocalStorageItem } =
     useLocalStorage('JWT_TOKEN');
 
-  const url = `${env.API_URL}/auth/authenticate`;
+  const loginUrl = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };
-
-  const { response, callApi } = useFetch<LoginResponse>(
-    url,
+  const { response: loginResponse, callApi } = useFetch<LoginResponse>(
+    loginUrl,
     'POST',
     payload,
     false
+  );
+
+  const { response: boardResponse } = useFetch<BoardDto[]>(
+    `${env.API_URL}/boards`,
+    'GET'
   );
 
   const handleSignInModalClick = () => setShowSignIn(true);
@@ -40,16 +43,16 @@ const NavbarLayout = ({ children }: LayoutProps) => {
     e.preventDefault();
     callApi();
 
-    if (response?.token) {
-      setLocalStorageItem(response.token);
+    if (loginResponse?.token) {
+      setLocalStorageItem(loginResponse.token);
     }
   };
 
   const handleLogOutClick = () => setLocalStorageItem(null);
 
   return (
-    <div className="flex items-center min-h-screen bg-slate-700">
-      <aside
+    <div className="flex min-h-screen">
+      <nav
         id="default-sidebar"
         className="top-0 left-0 z-40 w-64 h-screen mr-auto bg-green-400 sm:translate-x-0"
         aria-label="Sidebar"
@@ -73,23 +76,23 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           )}
 
           <ul className="pt-6 space-y-2 font-medium">
-            {boards.map((board) => (
-              <li key={board}>
+            {boardResponse?.map((board) => (
+              <li key={board.id}>
                 <Link
                   className="flex items-center p-2 text-gray-200 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-purple-300"
-                  to={board}
+                  to={board.name.toLowerCase().trim()}
                 >
                   <span className="flex-1 ml-2 text-xl font-medium whitespace-nowrap">
-                    {board}
+                    {board.name}
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
         </div>
-      </aside>
-      <div className="bg-blue-300 ">{children}</div>
-      {showSignIn && <SignUpModal setShowModal={setShowSignIn} />}
+        {showSignIn && <SignUpModal setShowModal={setShowSignIn} />}
+      </nav>
+      <main className="flex flex-grow p-4 bg-slate-700 ">{children}</main>
     </div>
   );
 };

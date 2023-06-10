@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>fullstackforum</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>build</version>
 	<name>fullstackforum</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>

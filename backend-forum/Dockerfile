@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17
 VOLUME /tmp
 EXPOSE 8080
-ARG JAR_FILE=fullstackforum-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=fullstackforum-build.jar
 WORKDIR /opt/app
 COPY --from=build /usr/src/app/target/${JAR_FILE} /opt/app/
-ENTRYPOINT [ "java", "-jar", "fullstackforum-0.0.1-SNAPSHOT.jar" ]
+ENTRYPOINT [ "java", "-jar", "fullstackforum-build.jar" ]
