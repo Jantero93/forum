@@ -17,13 +17,13 @@ services:
       - db-data:/var/lib/postgresql/data
 
   frontend:
-    image: "web-app"
-    container_name: "frontend"
+    image: web-app
+    container_name: frontend
     build:
       context: ./web-app
       dockerfile: Dockerfile
       args:
-        VITE_APP_API_URL: "http://localhost:8080/api"
+        VITE_APP_API_URL: http://localhost:8080/api
     ports:
       - 80:80
     depends_on:

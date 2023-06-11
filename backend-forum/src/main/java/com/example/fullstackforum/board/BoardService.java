@@ -13,6 +13,7 @@ import java.util.List;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final BoardMapper boardMapper;
 
     List<BoardDto> getAllBoards() {
         log.info("Fetching all boards");
@@ -20,21 +21,27 @@ public class BoardService {
 
         return boards
                 .stream()
-                .map(board -> new BoardDto(board.getId(), board.getName(), board.getAdjective()))
+                .map(boardMapper::mapBoardToDto)
                 .toList();
     }
 
-    public BoardTopicsDto getBoardByName(String name) {
-        log.info("Fetching board with topics by board name: {}", name);
-        var board = boardRepository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No board with name: " + name));
+    public BoardTopicsDto getBoardById(Integer id) {
+        log.info("Fetching board with topics by board id: {}", id);
 
+        var boardDb = boardRepository.findById(id);
+
+        if (boardDb.isEmpty()) {
+            log.warn("No board with id: {}", id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No board with id: " + id);
+        }
+
+        var board = boardDb.get();
 
         return BoardTopicsDto.builder()
                 .id(board.getId())
                 .name(board.getName())
-                .adjective(board.getAdjective())
-                .topicsDto(null)
+                .adjective(board.getDescription())
+                .topics(null)
                 .build();
     }
 }

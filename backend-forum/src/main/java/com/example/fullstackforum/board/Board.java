@@ -21,7 +21,7 @@ public class Board {
 
     private String name;
 
-    private String adjective;
+    private String description;
 
     @OneToMany(mappedBy = "board")
     private List<Topic> topics = new ArrayList<>();

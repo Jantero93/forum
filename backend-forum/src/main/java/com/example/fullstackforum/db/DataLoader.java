@@ -25,9 +25,9 @@ public class DataLoader implements ApplicationRunner {
             return;
         }
 
-        var board1 = Board.builder().name("Tietokoneet").adjective("Tietokoneet rulaa").build();
-        var board2 = Board.builder().name("Kissat").adjective("Miu may miu").build();
-        var board3 = Board.builder().name("Koirat").adjective("Wuf wuf wuf wuf").build();
+        var board1 = Board.builder().name("Tietokoneet").description("Tietokoneet rulaa").build();
+        var board2 = Board.builder().name("Kissat").description("Miu may miu").build();
+        var board3 = Board.builder().name("Koirat").description("Wuf wuf wuf wuf").build();
 
         var boardList = Arrays.asList(board1, board2, board3);
         boardRepository.saveAll(boardList);

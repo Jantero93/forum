@@ -1,2 +1,5 @@
 node_modules
 yarn.lock
+tsconfig.tsbuildinfo
+dist
+build

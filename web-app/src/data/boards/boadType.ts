@@ -1,5 +1,5 @@
 export type BoardDto = {
   id: number;
   name: string;
-  adjective: string;
+  description: string;
 };
