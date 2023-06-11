@@ -1,5 +1,5 @@
 import React from 'react';
-import BoardCard from '~/components/BoardCard';
+import BoardCard from '~/pages/board/BoardCard';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { BoardDto } from '~/data/boards/boadType';
 import { useFetch } from '~/hooks/useFetch';

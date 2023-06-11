@@ -1,10 +1,6 @@
-import { Outlet } from 'react-router-dom';
-import NavbarLayout from './components/navbar/NavbarLayout';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router/Router';
 
-const App = () => (
-  <NavbarLayout>
-    <Outlet />
-  </NavbarLayout>
-);
+const App = () => <RouterProvider router={router} />;
 
 export default App;

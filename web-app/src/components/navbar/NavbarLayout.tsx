@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from '~/assets/WebSiteLogo.png';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import SignUpModal from '~/components/SignUpModal';
 import { useFetch } from '~/hooks/useFetch';
@@ -76,14 +76,18 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           )}
 
           <ul className="pt-6 space-y-2 font-medium">
-            {boardResponse?.map((board) => (
-              <li key={board.id}>
+            {boardResponse?.map(({ id, name }) => (
+              <li key={id}>
                 <Link
                   className="flex items-center p-2 text-gray-200 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-purple-300"
-                  to={board.name.toLowerCase().trim()}
+                  to={`/${name.toLowerCase()}`}
+                  state={{
+                    boardId: id,
+                    boardName: name
+                  }}
                 >
                   <span className="flex-1 ml-2 text-xl font-medium whitespace-nowrap">
-                    {board.name}
+                    {name}
                   </span>
                 </Link>
               </li>
