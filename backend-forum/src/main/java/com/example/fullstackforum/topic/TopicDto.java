@@ -7,10 +7,10 @@ import java.util.List;
 
 @Builder
 public record TopicDto(
+        Integer id,
         String header,
         String message,
         String creator,
-        Date createdTime,
-        List<?> posts
+        Date createdTime
 ) {
 }

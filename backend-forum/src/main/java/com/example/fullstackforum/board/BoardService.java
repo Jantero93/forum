@@ -27,25 +27,18 @@ public class BoardService {
                 .toList();
     }
 
-    public BoardTopicsDto getBoardById(Integer id) {
-        log.info("Fetching board with topics by board id: {}", id);
+    public BoardTopicsDto getBoardByName(String name) {
+        log.info("Fetching board with topics by board id: {}", name);
 
-        var boardDb = boardRepository.findById(id);
+        var boardDb = boardRepository.findByNameIgnoreCase(name);
 
         if (boardDb.isEmpty()) {
-            log.warn("No board with id: {}", id);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No board with id: " + id);
+            log.warn("No board with id: {}", name);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No board with name: " + name);
         }
 
         var board = boardDb.get();
 
-        return BoardTopicsDto.builder()
-                .id(board.getId())
-                .name(board.getName())
-                .adjective(board.getDescription())
-                .topics(
-                        board.getTopics().stream().map(topicMapper::mapTopicToDto).toList()
-                )
-                .build();
+        return boardMapper.mapBoardTopicsToBoardTopicsDto(board);
     }
 }

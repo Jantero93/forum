@@ -22,9 +22,9 @@ public class BoardController {
 
     @GetMapping("board")
     public BoardTopicsDto getBoardByName(
-            @RequestParam(name = "id") Integer id
+            @RequestParam(name = "name") String name
     ) {
-        return boardService.getBoardById(id);
+        return boardService.getBoardByName(name);
     }
 
 }

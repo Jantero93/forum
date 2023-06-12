@@ -1,7 +1,7 @@
 import React from 'react';
 import BoardCard from '~/pages/board/BoardCard';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
-import { BoardDto } from '~/data/boardTypes';
+import { BoardDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
 

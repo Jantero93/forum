@@ -9,11 +9,11 @@ public class TopicMapper {
 
     public TopicDto mapTopicToDto(Topic topic) {
         return TopicDto.builder()
+                .id(topic.getId())
                 .creator(topic.getUser().getEmail())
                 .createdTime(topic.getCreatedTime())
                 .header(topic.getHeading())
                 .message(topic.getMessage())
-                .posts(null)
                 .build();
     }
 }

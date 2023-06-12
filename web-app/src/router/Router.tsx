@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import BoardPage from '~/pages/board/BoardPage';
 import ErrorPage from '~/pages/ErrorPage';
-import TopicPage from '~/pages/topic/TopicPage';
+import TopicsPage from '~/pages/topic/TopicsPage';
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +12,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/:name',
-    element: <TopicPage />
+    element: <TopicsPage key={document.location.href} />
+  },
+  {
+    path: '/:name/:id',
+    element: <div>topic holder</div>
   }
 ]);
