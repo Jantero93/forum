@@ -2,6 +2,8 @@ package com.example.fullstackforum.db;
 
 import com.example.fullstackforum.board.Board;
 import com.example.fullstackforum.board.BoardRepository;
+import com.example.fullstackforum.posts.Post;
+import com.example.fullstackforum.posts.PostRepository;
 import com.example.fullstackforum.security.user.Role;
 import com.example.fullstackforum.security.user.User;
 import com.example.fullstackforum.security.user.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -29,6 +32,7 @@ public class DataLoader implements ApplicationRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TopicRepository topicRepository;
+    private final PostRepository postRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -118,21 +122,58 @@ public class DataLoader implements ApplicationRunner {
 
         var topicList = IntStream.range(0, topicCount).mapToObj(
                 i -> {
-                    var rand = new Random();
                     var fakeHeader = faker.lorem().word();
                     var fakeMsg = StringUtils.join(faker.lorem().words(10), " ");
                     return Topic.builder()
                             .board(board)
                             .heading(fakeHeader)
                             .message(fakeMsg)
-                            .votes(rand.nextInt((10 - 1) + 1) + 1) // random int 1-10
+                            .votes(getRandomNumber(1, 10))
                             .user(notUserAdmin)
                             .posts(null)
                             .build();
                 }
         ).toList();
 
-        topicRepository.saveAll(topicList);
+        var topicListDb = topicRepository.saveAll(topicList);
+
+        topicListDb.forEach(
+                topic -> generatePostsForTopic(topic, getRandomNumber(3, 20))
+        );
+
         log.info("Created topics for boards");
+    }
+
+    private void generatePostsForTopic(Topic topic, int postsCount) {
+        log.info("Generating posts for topic id: {}", topic.getId());
+
+        var fakeUser = userRepository.findAll()
+                .stream()
+                .filter(user -> !user.getEmail().equals("admin"))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Error on getting fake user for fake posts"));
+
+        var faker = new Faker();
+
+        var postList = IntStream.range(0, postsCount).mapToObj(
+                i -> {
+                    var fakeWordList = faker.lorem().words(getRandomNumber(10, 40));
+                    var fakeMsg = StringUtils.join(fakeWordList, " ");
+                    return Post.builder()
+                            .topic(topic)
+                            .message(fakeMsg)
+                            .votes(getRandomNumber(1, 20))
+                            .user(fakeUser)
+                            .build();
+
+                }
+        ).toList();
+
+        postRepository.saveAll(postList);
+    }
+
+    private int getRandomNumber(int start, int end) {
+        var rand = new Random();
+        return rand.nextInt((end - start) + 1) + start;
     }
 }

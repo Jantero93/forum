@@ -4,9 +4,11 @@ import com.example.fullstackforum.security.user.User;
 import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
@@ -15,13 +17,16 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 @Table(name = "posts")
+@Builder
 public class Post {
 
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Column(length = 8191)
     private String message;
+
     private Integer votes;
 
     @CreationTimestamp

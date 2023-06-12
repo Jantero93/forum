@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/boards/**")
+                .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/boards/**", "api/topics/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
