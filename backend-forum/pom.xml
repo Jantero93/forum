@@ -79,6 +79,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 		</dependency>
+		<dependency>
+			<groupId>net.datafaker</groupId>
+			<artifactId>datafaker</artifactId>
+			<version>2.0.0</version>
+		</dependency>
 
 	</dependencies>
 
