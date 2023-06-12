@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from '~/assets/WebSiteLogo.png';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import SignUpModal from '~/components/SignUpModal';
 import { useFetch } from '~/hooks/useFetch';
@@ -8,7 +8,8 @@ import env from '~/util/env';
 import { useLocalStorage } from '~/hooks/useLocalStorage';
 import LogInForm from './LogInForm';
 import SignedInCard from './SignedInCard';
-import { BoardDto } from '~/data/boards/boadType';
+import { BoardDto } from '~/data/boardTypes';
+import { TopicPageLocationState } from '~/pages/topic/TopicPage';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -76,22 +77,27 @@ const NavbarLayout = ({ children }: LayoutProps) => {
           )}
 
           <ul className="pt-6 space-y-2 font-medium">
-            {boardResponse?.map(({ id, name }) => (
-              <li key={id}>
-                <Link
-                  className="flex items-center p-2 text-gray-200 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-purple-300"
-                  to={`/${name.toLowerCase()}`}
-                  state={{
-                    boardId: id,
-                    boardName: name
-                  }}
-                >
-                  <span className="flex-1 ml-2 text-xl font-medium whitespace-nowrap">
-                    {name}
-                  </span>
-                </Link>
-              </li>
-            ))}
+            {boardResponse?.map(({ id, name, description }) => {
+              const stateProps: TopicPageLocationState = {
+                boardId: id,
+                boardName: name,
+                description
+              };
+
+              return (
+                <li key={id}>
+                  <Link
+                    className="flex items-center p-2 text-gray-200 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-purple-300"
+                    to={`/${name.toLowerCase()}`}
+                    state={stateProps}
+                  >
+                    <span className="flex-1 ml-2 text-xl font-medium whitespace-nowrap">
+                      {name}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </nav>

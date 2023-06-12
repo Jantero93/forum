@@ -22,7 +22,6 @@ public class Topic {
     @GeneratedValue
     private Integer id;
 
-    private String name;
     private String heading;
     private String message;
     private Integer votes;

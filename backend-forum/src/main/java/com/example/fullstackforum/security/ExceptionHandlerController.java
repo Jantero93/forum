@@ -19,7 +19,7 @@ public class ExceptionHandlerController {
     public ResponseEntity<ExceptionResponse> responseExceptionHandler(ResponseStatusException ex, WebRequest request) {
         var errorMsg = ex.getReason() == null ? ex.getMessage() : ex.getReason();
 
-        log.warn("Sending exception with message: {}", errorMsg);
+        log.warn("Sending response exception, statuscode: {}, message: {}", ex.getStatusCode(), errorMsg);
 
         var body = new ExceptionResponse(errorMsg);
         return new ResponseEntity<>(body, ex.getStatusCode());
