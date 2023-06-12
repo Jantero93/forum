@@ -32,7 +32,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("Starting initializing data with DataLoader");
+        log.info("Starting initializing data with DataLoader class");
 
         generateAdminUser();
         generateNormalUser();
@@ -93,6 +93,9 @@ public class DataLoader implements ApplicationRunner {
         var boardList = Arrays.asList(board1, board2, board3);
         boardRepository.saveAll(boardList);
 
+        var boardNames = boardList.stream().map(Board::getName).toList();
+        log.info("Generated boards: {}", boardNames);
+
         generateTopicsForBoard(board1, 5);
         generateTopicsForBoard(board2, 7);
         generateTopicsForBoard(board3, 1);
@@ -130,5 +133,6 @@ public class DataLoader implements ApplicationRunner {
         ).toList();
 
         topicRepository.saveAll(topicList);
+        log.info("Created topics for boards");
     }
 }
