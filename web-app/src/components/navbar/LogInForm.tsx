@@ -23,7 +23,7 @@ const LogInForm = ({
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
-        className="w-full p-1 mb-2 border rounded appearance-none mshadow"
+        className="w-full p-1 mb-3 border rounded appearance-none mshadow"
         name="Passowrd"
         type="text"
         placeholder="Password"

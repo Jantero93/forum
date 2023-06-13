@@ -17,7 +17,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -33,6 +32,7 @@ public class DataLoader implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final TopicRepository topicRepository;
     private final PostRepository postRepository;
+    private final Faker faker;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -67,11 +67,10 @@ public class DataLoader implements ApplicationRunner {
 
     private void generateNormalUser() {
         if (userRepository.count() > 1) {
-            log.info("Users already exists, skipping initializing");
+            log.info("Normal user(s) already exists, skipping initializing, userRepository size: {}", userRepository.count());
             return;
         }
 
-        var faker = new Faker();
         var user = User.builder()
                 .email(faker.internet().emailAddress())
                 .password(
@@ -118,12 +117,10 @@ public class DataLoader implements ApplicationRunner {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Error on getting fake user for fake topics"));
 
-        Faker faker = new Faker();
-
         var topicList = IntStream.range(0, topicCount).mapToObj(
                 i -> {
                     var fakeHeader = faker.lorem().word();
-                    var fakeMsg = StringUtils.join(faker.lorem().words(10), " ");
+                    var fakeMsg = StringUtils.join(faker.lorem().words(getRandomNumber(1, 20)), " ");
                     return Topic.builder()
                             .board(board)
                             .heading(fakeHeader)
@@ -141,7 +138,7 @@ public class DataLoader implements ApplicationRunner {
                 topic -> generatePostsForTopic(topic, getRandomNumber(3, 20))
         );
 
-        log.info("Created topics for boards");
+        log.info("Created topics for board: {}", board.getId());
     }
 
     private void generatePostsForTopic(Topic topic, int postsCount) {
@@ -152,8 +149,6 @@ public class DataLoader implements ApplicationRunner {
                 .filter(user -> !user.getEmail().equals("admin"))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Error on getting fake user for fake posts"));
-
-        var faker = new Faker();
 
         var postList = IntStream.range(0, postsCount).mapToObj(
                 i -> {

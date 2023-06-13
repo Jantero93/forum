@@ -1,6 +1,13 @@
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router/Router';
+import { Outlet } from 'react-router-dom';
+import Navbar from './components/navbar/Navbar';
 
-const App = () => <RouterProvider router={router} />;
+const App = () => (
+  <>
+    <div className="flex min-h-screen bg-gray-800">
+      <Navbar />
+      <Outlet />
+    </div>
+  </>
+);
 
 export default App;
