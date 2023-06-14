@@ -13,6 +13,7 @@ public record TopicWithPostsDto(
         String message,
         String creator,
         Date createdTime,
+        Integer votes,
         List<PostDto> posts
 ) {
 }

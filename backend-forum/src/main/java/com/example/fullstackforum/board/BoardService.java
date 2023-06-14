@@ -1,6 +1,5 @@
 package com.example.fullstackforum.board;
 
-import com.example.fullstackforum.topic.TopicMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import java.util.List;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final TopicMapper topicMapper;
     private final BoardMapper boardMapper;
 
     List<BoardDto> getAllBoards() {

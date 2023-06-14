@@ -11,6 +11,24 @@ export type BoardTopicsDto = {
   topics: TopicDto[];
 };
 
+export type TopicWithPostsDto = {
+  id: number;
+  header: string;
+  message: string;
+  creator: string;
+  createdTime: Date;
+  votes: number;
+  posts: PostDto[];
+};
+
+export type PostDto = {
+  id: number;
+  message: string;
+  votes: number;
+  createdTime: Date;
+  user: string;
+};
+
 export type TopicDto = {
   id: number;
   header: string;

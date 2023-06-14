@@ -14,7 +14,6 @@ public class TopicService {
     private final TopicRepository topicRepository;
     private final TopicMapper topicMapper;
 
-
     public TopicWithPostsDto getTopicWithPostsByTopicId(Integer id) {
         log.info("Getting topic with posts by topic id: {}", id);
 

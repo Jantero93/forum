@@ -62,8 +62,7 @@ const Navbar = () => {
   return (
     <nav
       id="default-sidebar"
-      className="relative top-0 left-0 z-40 w-64 h-full mr-auto sm:translate-x-0"
-      aria-label="Sidebar"
+      className="top-0 left-0 z-40 w-64 h-full sm:translate-x-0"
     >
       <div className="flex flex-col h-full px-3 py-4 overflow-y-auto ">
         <div className="mb-4 rounded-lg cursor-pointer hover:bg-gray-700">

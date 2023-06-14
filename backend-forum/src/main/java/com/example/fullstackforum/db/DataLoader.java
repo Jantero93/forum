@@ -15,6 +15,7 @@ import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,11 @@ public class DataLoader implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final TopicRepository topicRepository;
     private final PostRepository postRepository;
-    private final Faker faker;
+
+    @Bean
+    public Faker faker() {
+        return new Faker();
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -72,9 +77,9 @@ public class DataLoader implements ApplicationRunner {
         }
 
         var user = User.builder()
-                .email(faker.internet().emailAddress())
+                .email(faker().internet().emailAddress())
                 .password(
-                        passwordEncoder.encode(faker.internet().password())
+                        passwordEncoder.encode(faker().internet().password())
                 )
                 .role(Role.USER)
                 .build();
@@ -119,8 +124,8 @@ public class DataLoader implements ApplicationRunner {
 
         var topicList = IntStream.range(0, topicCount).mapToObj(
                 i -> {
-                    var fakeHeader = faker.lorem().word();
-                    var fakeMsg = StringUtils.join(faker.lorem().words(getRandomNumber(1, 20)), " ");
+                    var fakeHeader = faker().lorem().word();
+                    var fakeMsg = StringUtils.join(faker().lorem().words(getRandomNumber(1, 20)), " ");
                     return Topic.builder()
                             .board(board)
                             .heading(fakeHeader)
@@ -152,7 +157,7 @@ public class DataLoader implements ApplicationRunner {
 
         var postList = IntStream.range(0, postsCount).mapToObj(
                 i -> {
-                    var fakeWordList = faker.lorem().words(getRandomNumber(10, 40));
+                    var fakeWordList = faker().lorem().words(getRandomNumber(10, 40));
                     var fakeMsg = StringUtils.join(fakeWordList, " ");
                     return Post.builder()
                             .topic(topic)
