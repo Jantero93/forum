@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,9 +22,9 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class DataLoader implements ApplicationRunner {
+@RequiredArgsConstructor
+public class DataFakerService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
@@ -39,13 +37,12 @@ public class DataLoader implements ApplicationRunner {
         return new Faker();
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        log.info("Starting initializing data with DataLoader class");
+    public void generateFakeDbData() {
+        log.info("Starting initializing data with {} class", getClass().getSimpleName());
 
         generateAdminUser();
         generateNormalUser();
-        generateBoardsWithTopics();
+        generateBoardsWithTopicsAndPosts();
 
         log.info("Initialized all data");
     }
@@ -88,7 +85,7 @@ public class DataLoader implements ApplicationRunner {
         log.info("Created fake user with email: {}", userDb.getEmail());
     }
 
-    private void generateBoardsWithTopics() {
+    private void generateBoardsWithTopicsAndPosts() {
         if (boardRepository.count() > 0) {
             log.info("Skipped initializing, boardRepository size {}", boardRepository.count());
             return;
@@ -104,11 +101,11 @@ public class DataLoader implements ApplicationRunner {
         var boardNames = boardList.stream().map(Board::getName).toList();
         log.info("Generated boards: {}", boardNames);
 
-        generateTopicsForBoard(board1, 5);
-        generateTopicsForBoard(board2, 7);
-        generateTopicsForBoard(board3, 1);
+        generateTopicsForBoard(board1, getRandomNumber(1, 10));
+        generateTopicsForBoard(board2, getRandomNumber(1, 10));
+        generateTopicsForBoard(board3, getRandomNumber(1, 10));
 
-        log.info("Initialized boards repository with mock up data");
+        log.info("Initialized database with mock up data");
     }
 
     private void generateTopicsForBoard(Board board, int topicCount) {
@@ -176,4 +173,5 @@ public class DataLoader implements ApplicationRunner {
         var rand = new Random();
         return rand.nextInt((end - start) + 1) + start;
     }
+
 }

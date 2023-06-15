@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { dateFormatForum } from '~/util/consts';
 import { formatDate } from '~/util/dateHelpers';
 
 type TopicCardProps = {
@@ -21,7 +22,7 @@ const TopicCard = ({
     <Link to={topicId.toString()}>
       <p className="text-2xl text-slate-100">{header}</p>
       <p className="text-slate-500">
-        {formatDate(createdTime, 'DD.MM.YYYY h:mm:ss')}
+        {formatDate(createdTime, dateFormatForum)}
       </p>
       <p className="text-slate-500">{creator}</p>
       <p className="text-slate-300">{message}</p>

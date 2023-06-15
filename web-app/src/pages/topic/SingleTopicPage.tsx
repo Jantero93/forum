@@ -14,7 +14,7 @@ const SingleTopicPage = () => {
     'GET'
   );
 
-  // TODO: Handle no data situation
+  // TODO: Handle no data situvation
   if (!response) return <div>oh noes</div>;
 
   return (

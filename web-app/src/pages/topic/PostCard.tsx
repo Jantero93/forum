@@ -1,4 +1,5 @@
 import React from 'react';
+import { dateFormatForum } from '~/util/consts';
 import { formatDate } from '~/util/dateHelpers';
 
 type PostCardProps = {
@@ -19,7 +20,7 @@ const PostCard = ({
       <div className="flex gap-5">
         <p className="text-lg text-cyan-400">{user}</p>
         <p className="text-lg text-slate-500">
-          {formatDate(createdTime, 'DD.MM.YYYY [klo] h:mm:ss')}
+          {formatDate(createdTime, dateFormatForum)}
         </p>
       </div>
       <p className="text-xl text-slate-300">{message}</p>
