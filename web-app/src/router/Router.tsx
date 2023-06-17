@@ -4,7 +4,7 @@ import App from '~/App';
 import BoardPage from '~/pages/board/BoardPage';
 import ErrorPage from '~/pages/ErrorPage';
 import SingleTopicPage from '~/pages/topic/SingleTopicPage';
-import TopicsPage from '~/pages/topic/TopicsPage';
+import TopicsPage from '~/pages/topics/TopicsPage';
 
 export const router = createBrowserRouter([
   {

@@ -4,6 +4,7 @@ import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { TopicWithPostsDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
+import NewPostForm from './NewPostForm';
 import PostCard from './PostCard';
 
 const SingleTopicPage = () => {
@@ -20,10 +21,10 @@ const SingleTopicPage = () => {
   return (
     <NavbarLayout>
       <div className="flex justify-center">
-        <div className="flex flex-col flex-grow max-w-screen-xl text-left rounded-lg bg-slate-800">
+        <div className="flex flex-col flex-grow max-w-screen-xl px-20 py-10 text-left rounded-lg bg-slate-800">
           <div
-            id="topic-content"
-            className="flex flex-col gap-6 px-20 py-5 text-left w-100 text-slate-900"
+            id="topics-content"
+            className="flex flex-col gap-5 text-left w-100 text-slate-900"
           >
             <h1 className="font-sans text-3xl font-bold bg-slate text-slate-200">
               {response?.header}
@@ -45,6 +46,7 @@ const SingleTopicPage = () => {
                 />
               )
             )}
+            <NewPostForm />
           </div>
         </div>
       </div>
