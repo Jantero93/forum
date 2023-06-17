@@ -17,11 +17,10 @@ const NewPostForm = () => {
     <form className="rounded-xl">
       <div className="flex p-3">
         <textarea
+          defaultValue="Test"
           rows={3}
           className="w-full p-2 overflow-hidden text-base text-gray-900 bg-gray-100 border-gray-300 rounded-lg resize-none ring-2 ring-slate-500"
-        >
-          Moro
-        </textarea>
+        />
         <div className="flex flex-col w-1/12 gap-2 ml-2" id="post-toolbox">
           <button
             className="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:text-slate-200 hover:bg-green-700"

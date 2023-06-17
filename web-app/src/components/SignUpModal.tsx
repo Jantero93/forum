@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useAuth } from '~/hooks/useAuth';
 import { useFetch } from '~/hooks/useFetch';
-import { useLocalStorage } from '~/hooks/useLocalStorage';
 import env from '~/util/env';
 
 type SignUpModalProps = {
@@ -12,7 +12,8 @@ type RegisterResponse = { token: string };
 const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setLocalStorageItem } = useLocalStorage('JWT_TOKEN');
+
+  const { logInUser } = useAuth();
 
   const url = `${env.API_URL}/auth/register` as const;
   const payload = { email, password } as const;
@@ -29,7 +30,7 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
     callApi();
 
     if (response?.token) {
-      setLocalStorageItem(response.token);
+      logInUser(response.token);
     }
   };
 

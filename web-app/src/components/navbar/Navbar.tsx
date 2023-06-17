@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { BoardDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import Logo from '~/assets/WebSiteLogo.png';
-import { useLocalStorage } from '~/hooks/useLocalStorage';
 import env from '~/util/env';
 import SignedInCard from './SignedInCard';
 import LogInForm from './LogInForm';
 import SignUpModal from '../SignUpModal';
+import { useAuth } from '~/hooks/useAuth';
 
 type LoginResponse = { token: string };
 
@@ -15,8 +15,7 @@ const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { localStorageItem, setLocalStorageItem } =
-    useLocalStorage('JWT_TOKEN');
+  const { isLogged, logInUser, logOutUser } = useAuth();
 
   const loginUrl = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };
@@ -39,14 +38,14 @@ const Navbar = () => {
     callApi();
 
     if (loginResponse?.token) {
-      setLocalStorageItem(loginResponse.token);
+      logInUser(loginResponse.token);
     }
   };
 
   const formOrLoggedInComponent = (): JSX.Element => {
     if (showSignIn) return <SignUpModal setShowModal={setShowSignIn} />;
 
-    return localStorageItem ? (
+    return isLogged ? (
       <SignedInCard handleLogOutClick={handleLogOutClick} />
     ) : (
       <LogInForm
@@ -58,7 +57,8 @@ const Navbar = () => {
     );
   };
 
-  const handleLogOutClick = () => setLocalStorageItem(null);
+  const handleLogOutClick = () => logOutUser();
+
   return (
     <nav
       id="default-sidebar"

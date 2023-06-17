@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocalStorage } from './useLocalStorage';
+import { useAuth } from './useAuth';
 
 type Method = 'GET' | 'POST' | 'DELETE' | 'PUT';
 
@@ -20,9 +20,7 @@ export const useFetch = <T>(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(undefined);
   const [refresh, setRefresh] = useState(fetchImmediately);
-
-  const { localStorageItem: authorizationHeader } =
-    useLocalStorage<string>('JWT_TOKEN');
+  const { token: authorizationHeader } = useAuth();
 
   useEffect(() => {
     const fetchResponse = async () => {
