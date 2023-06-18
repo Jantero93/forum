@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
-const NewPostForm = () => {
+type NewPostFormProps = {
+  msg: string;
+  setMsg: Dispatch<SetStateAction<string>>;
+};
+
+const NewPostForm = ({ msg, setMsg }: NewPostFormProps) => {
   const imageClicked = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     alert('Image clicked');
@@ -17,9 +22,12 @@ const NewPostForm = () => {
     <form className="rounded-xl">
       <div className="flex p-3">
         <textarea
-          defaultValue="Test"
           rows={3}
           className="w-full p-2 overflow-hidden text-base text-gray-900 bg-gray-100 border-gray-300 rounded-lg resize-none ring-2 ring-slate-500"
+          value={msg}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setMsg(e.target.value)
+          }
         />
         <div className="flex flex-col w-1/12 gap-2 ml-2" id="post-toolbox">
           <button

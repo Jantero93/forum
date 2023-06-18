@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { TopicWithPostsDto } from '~/data/apiTypes';
@@ -8,6 +8,8 @@ import NewPostForm from './NewPostForm';
 import PostCard from './PostCard';
 
 const SingleTopicPage = () => {
+  const [msg, setMsg] = useState('');
+
   const { id } = useParams();
 
   const { response } = useFetch<TopicWithPostsDto>(
@@ -46,7 +48,7 @@ const SingleTopicPage = () => {
                 />
               )
             )}
-            <NewPostForm />
+            <NewPostForm msg={msg} setMsg={setMsg} />
           </div>
         </div>
       </div>

@@ -28,4 +28,15 @@ public class TopicService {
 
         return topicMapper.mapTopicToTopicWithPostsDto(topic);
     }
+
+    public Topic getTopicById(Integer id) {
+        var topic = topicRepository.findById(id);
+
+        if (topic.isEmpty()) {
+            log.warn("No topic found with id: {}", id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No topic with id " + id);
+        }
+
+        return topic.get();
+    }
 }
