@@ -26,9 +26,9 @@ public class BoardService {
     }
 
     public BoardTopicsDto getBoardByName(String name) {
-        log.info("Fetching board with topics by board id: {}", name);
+        log.info("Fetching board with topics by board name: {}", name);
 
-        var boardDb = boardRepository.findByNameIgnoreCase(name);
+        var boardDb = boardRepository.findByName(name);
 
         if (boardDb.isEmpty()) {
             log.warn("No board with id: {}", name);

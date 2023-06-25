@@ -76,7 +76,7 @@ const Navbar = () => {
             <li key={id}>
               <Link
                 className="flex items-center p-2 text-gray-200 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-purple-300"
-                to={`/${name.toLowerCase()}`}
+                to={`/${name}`}
               >
                 <span className="flex-1 ml-2 text-xl font-medium whitespace-nowrap">
                   {name}

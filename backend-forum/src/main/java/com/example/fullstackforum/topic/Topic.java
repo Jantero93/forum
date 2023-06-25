@@ -6,6 +6,7 @@ import com.example.fullstackforum.security.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ public class Topic {
     private Integer id;
 
     private String heading;
+
+    @Column(length = 8191)
     private String message;
     private Integer votes;
 

@@ -12,11 +12,12 @@ import com.example.fullstackforum.topic.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -37,7 +38,39 @@ public class DataFakerService {
         return new Faker();
     }
 
-    public void generateFakeDbData() {
+
+    public Board generateMockupBoard() {
+        return Board.builder()
+                .description(faker().lorem().sentence(10))
+                .name(faker().lorem().word())
+                .topics(new ArrayList<>())
+                .build();
+    }
+
+    public Topic generateMockupTopic() {
+        return Topic.builder()
+                .heading(faker().lorem().word())
+                .message(faker().lorem().sentence(10))
+                .posts(new ArrayList<>())
+                .votes(1)
+                .build();
+    }
+
+    public User generateMockupUser() {
+        return User.builder()
+                .email(faker().internet().emailAddress())
+                .password(
+                        passwordEncoder.encode(faker().internet().password())
+                )
+                .role(Role.USER)
+                .posts(new ArrayList<>())
+                .topics(new ArrayList<>())
+                .tokens(new ArrayList<>())
+                .build();
+    }
+
+    @Transactional
+    public void generateDbInitializationData() {
         log.info("Starting initializing data with {} class", getClass().getSimpleName());
 
         generateAdminUser();
@@ -122,7 +155,7 @@ public class DataFakerService {
         var topicList = IntStream.range(0, topicCount).mapToObj(
                 i -> {
                     var fakeHeader = faker().lorem().word();
-                    var fakeMsg = StringUtils.join(faker().lorem().words(getRandomNumber(1, 20)), " ");
+                    var fakeMsg = faker().lorem().sentence(40);
                     return Topic.builder()
                             .board(board)
                             .heading(fakeHeader)
@@ -154,8 +187,7 @@ public class DataFakerService {
 
         var postList = IntStream.range(0, postsCount).mapToObj(
                 i -> {
-                    var fakeWordList = faker().lorem().words(getRandomNumber(10, 40));
-                    var fakeMsg = StringUtils.join(fakeWordList, " ");
+                    var fakeMsg = faker().lorem().sentence(40);
                     return Post.builder()
                             .topic(topic)
                             .message(fakeMsg)

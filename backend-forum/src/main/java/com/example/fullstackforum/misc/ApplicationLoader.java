@@ -16,7 +16,7 @@ public class ApplicationLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        dataFakerService.generateFakeDbData();
+        dataFakerService.generateDbInitializationData();
     }
 
 
