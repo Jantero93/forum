@@ -1,5 +1,6 @@
 package com.example.fullstackforum.security;
 
+import com.example.fullstackforum.security.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +21,7 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
 
-    private final static int oneDayInMilliseconds = 1000 * 60 * 24;
+    private final static int ONE_DAY_MILLISECONDS = 1000 * 60 * 24;
 
     @Value("${JWT_TOKEN_SECRET}")
     private String SECRET_KEY;
@@ -50,7 +51,12 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        var extraClaims = new HashMap<String, Object>();
+
+        var user = (User) userDetails;
+        extraClaims.put("role", user.getRole().name());
+
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(
@@ -62,7 +68,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + oneDayInMilliseconds))
+                .setExpiration(new Date(System.currentTimeMillis() + ONE_DAY_MILLISECONDS))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
