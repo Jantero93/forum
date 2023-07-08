@@ -21,7 +21,7 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
 
-    private final static int ONE_DAY_MILLISECONDS = 1000 * 60 * 24;
+    private static final int ONE_DAY_MILLISECONDS = 1000 * 60 * 24;
 
     @Value("${JWT_TOKEN_SECRET}")
     private String SECRET_KEY;
