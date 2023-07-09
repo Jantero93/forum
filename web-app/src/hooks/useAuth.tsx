@@ -18,9 +18,9 @@ export const useAuth = () => {
       return;
     }
 
-    const decodedJwt = decodeJwtClaims(token);
+    const { role } = decodeJwtClaims(token);
 
-    setRole(decodedJwt.role);
+    setRole(role);
     setLocalStorageItem(token);
     setIsLogged(true);
   };

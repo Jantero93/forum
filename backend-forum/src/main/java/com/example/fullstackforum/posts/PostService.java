@@ -5,9 +5,7 @@ import com.example.fullstackforum.security.user.UserService;
 import com.example.fullstackforum.topic.TopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -21,22 +19,15 @@ public class PostService {
     private final PostMapper postMapper;
     private final UserService userService;
 
-    public PostDto savePost(SavePostRequest requestBody) {
+    public PostDto savePost(NewPostRequest requestBody) {
         var requestUserDetails = authenticationService.getRequestUserDetails();
 
-        if (!requestUserDetails.getUsername().equals(requestBody.getUser())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Post request user and authentication user mismatch"
-            );
-        }
-
-        var user = userService.getUserByEmail(requestBody.getUser());
-        var topic = topicService.getTopicById(requestBody.getTopicId());
+        var user = userService.getUserByEmail(requestUserDetails.getUsername());
+        var topic = topicService.getTopicById(requestBody.topicId());
 
 
         var post = Post.builder()
-                .message(requestBody.getMessage())
+                .message(requestBody.message())
                 .user(user)
                 .votes(0)
                 .topic(topic)

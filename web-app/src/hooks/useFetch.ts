@@ -32,7 +32,7 @@ export const useFetch = <T>(
       const headers: HeadersInit = {};
 
       if (authorizationHeader) {
-        headers['authorization'] = authorizationHeader;
+        headers['authorization'] = `Bearer ${authorizationHeader}`;
       }
 
       if (method === 'POST' || method === 'PUT') {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
-import { TopicWithPostsDto } from '~/data/apiTypes';
+import { TopicWithPostsDto, PostDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
 import NewPostForm from './NewPostForm';
@@ -17,7 +17,31 @@ const SingleTopicPage = () => {
     'GET'
   );
 
-  // TODO: Handle no data situvation
+  const [posts, setPosts] = useState<PostDto[]>(response?.posts ?? []);
+
+  const newPostPayload = {
+    message: msg,
+    topicId: id
+  } as const;
+
+  const { response: postResponse, callApi } = useFetch<PostDto>(
+    env.API_URL + '/post',
+    'POST',
+    newPostPayload,
+    false
+  );
+
+  console.log('postResponse', postResponse);
+
+  const sendPostClicked = (e: React.MouseEvent) => {
+    console.log('moro');
+    e.preventDefault();
+    callApi();
+
+    postResponse && setPosts([...posts, postResponse]);
+  };
+
+  // TODO: Handle no data situation
   if (!response) return <div>oh noes</div>;
 
   return (
@@ -48,7 +72,11 @@ const SingleTopicPage = () => {
                 />
               )
             )}
-            <NewPostForm msg={msg} setMsg={setMsg} />
+            <NewPostForm
+              msg={msg}
+              setMsg={setMsg}
+              sendPostClicked={sendPostClicked}
+            />
           </div>
         </div>
       </div>

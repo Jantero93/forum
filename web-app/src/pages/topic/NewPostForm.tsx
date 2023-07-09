@@ -3,18 +3,13 @@ import React, { Dispatch, SetStateAction } from 'react';
 type NewPostFormProps = {
   msg: string;
   setMsg: Dispatch<SetStateAction<string>>;
+  sendPostClicked: (e: React.MouseEvent) => void;
 };
 
-const NewPostForm = ({ msg, setMsg }: NewPostFormProps) => {
+const NewPostForm = ({ msg, setMsg, sendPostClicked }: NewPostFormProps) => {
   const imageClicked = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     alert('Image clicked');
-    return false;
-  };
-
-  const sendPostClicked = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    alert('Post sent');
     return false;
   };
 

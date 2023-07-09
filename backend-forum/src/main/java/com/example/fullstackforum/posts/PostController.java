@@ -14,7 +14,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("post")
-    public PostDto savePost(@RequestBody SavePostRequest request) {
+    public PostDto savePost(@RequestBody NewPostRequest request) {
         return postService.savePost(request);
     }
 }
