@@ -1,5 +1,5 @@
 const getEnv = (key: string) => {
-  const envVariable = import.meta.env[key] ?? 'moro';
+  const envVariable = import.meta.env[key];
 
   if (!envVariable) {
     throw new Error(`Env variable ${key} not found`);

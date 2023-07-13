@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useAuth } from '~/hooks/useAuth';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
@@ -18,20 +18,23 @@ const SignUpModal = ({ setShowModal }: SignUpModalProps) => {
   const url = `${env.API_URL}/auth/register` as const;
   const payload = { email, password } as const;
 
-  const { callApi, response } = useFetch<RegisterResponse>(
+  const { sendRequest, data: registerResponse } = useFetch<RegisterResponse>(
     url,
-    'POST',
-    payload,
-    false
+    {
+      method: 'POST',
+      payload
+    }
   );
+
+  useEffect(() => {
+    if (registerResponse) {
+      logInUser(registerResponse.token);
+    }
+  }, [registerResponse]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    callApi();
-
-    if (response?.token) {
-      logInUser(response.token);
-    }
+    sendRequest();
   };
 
   return (
