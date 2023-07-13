@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BoardDto } from '~/data/apiTypes';
-import { useFetch } from '~/hooks/useFetch';
 import Logo from '~/assets/WebSiteLogo.png';
 import env from '~/util/env';
 import SignedInCard from './SignedInCard';
 import LogInForm from './LogInForm';
 import SignUpModal from '../SignUpModal';
 import { useAuth } from '~/hooks/useAuth';
+import { useFetch } from '~/hooks/useFetch';
 
 type LoginResponse = { token: string };
 
@@ -19,28 +19,31 @@ const Navbar = () => {
 
   const loginUrl = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };
-  const { response: loginResponse, callApi } = useFetch<LoginResponse>(
+
+  const { data: loginResponse, sendRequest } = useFetch<LoginResponse>(
     loginUrl,
-    'POST',
-    payload,
-    false
+    {
+      method: 'POST',
+      payload
+    }
   );
 
-  const { response: boardResponse } = useFetch<BoardDto[]>(
-    `${env.API_URL}/boards`,
-    'GET'
-  );
+  const { data: boardResponse } = useFetch<BoardDto[]>(`${env.API_URL}/boards`);
+
+  useEffect(() => {
+    if (loginResponse?.token) {
+      logInUser(loginResponse.token);
+    }
+  }, [loginResponse]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 
   const handleLogInClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    callApi();
-
-    if (loginResponse?.token) {
-      logInUser(loginResponse.token);
-    }
+    sendRequest();
   };
+
+  const handleLogOutClick = () => logOutUser();
 
   const formOrLoggedInComponent = (): JSX.Element => {
     if (showSignIn) return <SignUpModal setShowModal={setShowSignIn} />;
@@ -56,8 +59,6 @@ const Navbar = () => {
       />
     );
   };
-
-  const handleLogOutClick = () => logOutUser();
 
   return (
     <nav

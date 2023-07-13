@@ -1,21 +1,22 @@
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useFetch } from '~/hooks/useFetch';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import TopicCard from './TopicCard';
 import { BoardTopicsDto } from '~/data/apiTypes';
 import env from '~/util/env';
+import { useFetch } from '~/hooks/useFetch';
 
 const TopicsPage = () => {
   const { name } = useParams();
 
-  const { response, callApi } = useFetch<BoardTopicsDto>(
-    `${env.API_URL}/board?name=${name}`,
-    'GET'
+  const { data: response, sendRequest } = useFetch<BoardTopicsDto>(
+    `${env.API_URL}/board?name=${name}`
   );
 
   // Force api call when route changes
-  useEffect(() => callApi(), [name]);
+  useEffect(() => {
+    sendRequest();
+  }, [name]);
 
   return (
     <NavbarLayout>

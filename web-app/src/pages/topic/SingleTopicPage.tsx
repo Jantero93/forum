@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { TopicWithPostsDto, PostDto } from '~/data/apiTypes';
@@ -9,40 +9,42 @@ import PostCard from './PostCard';
 
 const SingleTopicPage = () => {
   const [msg, setMsg] = useState('');
+  const [posts, setPosts] = useState<PostDto[]>([]);
 
   const { id } = useParams();
-
-  const { response } = useFetch<TopicWithPostsDto>(
-    `${env.API_URL}/topics/${id}`,
-    'GET'
-  );
-
-  const [posts, setPosts] = useState<PostDto[]>(response?.posts ?? []);
 
   const newPostPayload = {
     message: msg,
     topicId: id
   } as const;
 
-  const { response: postResponse, callApi } = useFetch<PostDto>(
-    env.API_URL + '/post',
-    'POST',
-    newPostPayload,
-    false
+  const { sendRequest, data } = useFetch<PostDto>(`${env.API_URL}/post`, {
+    method: 'POST',
+    payload: newPostPayload
+  });
+
+  const { data: topicResponse } = useFetch<TopicWithPostsDto>(
+    `${env.API_URL}/topics/${id}`
   );
 
-  console.log('postResponse', postResponse);
+  useEffect(() => {
+    if (data) {
+      setPosts((prevPosts) => [...prevPosts, data]);
+    }
+  }, [data]);
 
-  const sendPostClicked = (e: React.MouseEvent) => {
-    console.log('moro');
+  useEffect(() => {
+    if (topicResponse) setPosts(topicResponse.posts);
+  }, [topicResponse]);
+
+  const sendPostClicked = async (e: React.MouseEvent) => {
     e.preventDefault();
-    callApi();
 
-    postResponse && setPosts([...posts, postResponse]);
+    sendRequest();
   };
 
   // TODO: Handle no data situation
-  if (!response) return <div>oh noes</div>;
+  if (!topicResponse) return <div>oh noes</div>;
 
   return (
     <NavbarLayout>
@@ -53,25 +55,24 @@ const SingleTopicPage = () => {
             className="flex flex-col gap-5 text-left w-100 text-slate-900"
           >
             <h1 className="font-sans text-3xl font-bold bg-slate text-slate-200">
-              {response?.header}
+              {topicResponse?.header}
             </h1>
             <PostCard
-              createdTime={response.createdTime}
-              message={response.message}
-              user={response.creator}
-              votes={response.votes}
+              key={topicResponse.id}
+              createdTime={topicResponse.createdTime}
+              message={topicResponse.message}
+              user={topicResponse.creator}
+              votes={topicResponse.votes}
             />
-            {response?.posts.map(
-              ({ id, user, createdTime, message, votes }) => (
-                <PostCard
-                  key={id}
-                  createdTime={createdTime}
-                  message={message}
-                  user={user}
-                  votes={votes}
-                />
-              )
-            )}
+            {posts.map(({ id, user, createdTime, message, votes }) => (
+              <PostCard
+                key={id}
+                createdTime={createdTime}
+                message={message}
+                user={user}
+                votes={votes}
+              />
+            ))}
             <NewPostForm
               msg={msg}
               setMsg={setMsg}

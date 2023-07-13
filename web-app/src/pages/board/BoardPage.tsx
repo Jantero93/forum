@@ -6,11 +6,11 @@ import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
 
 const BoardPage = () => {
-  const { response } = useFetch<BoardDto[]>(`${env.API_URL}/boards`, 'GET');
+  const { data } = useFetch<BoardDto[]>(`${env.API_URL}/boards`);
   return (
     <NavbarLayout>
       <div className="flex flex-col items-center flex-grow gap-5">
-        {response?.map(({ id, name, description }) => (
+        {data?.map(({ id, name, description }) => (
           <BoardCard
             key={id}
             boardId={id}
