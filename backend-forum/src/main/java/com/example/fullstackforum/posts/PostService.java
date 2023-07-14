@@ -20,9 +20,9 @@ public class PostService {
     private final UserService userService;
 
     public PostDto savePost(NewPostRequest requestBody) {
-        var requestUserDetails = authenticationService.getRequestUserDetails();
+        log.info("Creating new post with data: {}", requestBody);
+        var user = authenticationService.getAuthenticatedRequestUser();
 
-        var user = userService.getUserByEmail(requestUserDetails.getUsername());
         var topic = topicService.getTopicById(requestBody.topicId());
 
 

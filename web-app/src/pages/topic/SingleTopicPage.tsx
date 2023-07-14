@@ -4,7 +4,7 @@ import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { TopicWithPostsDto, PostDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
-import NewPostForm from './NewPostForm';
+import NewPostForm from '../../components/NewPostForm';
 import PostCard from './PostCard';
 
 const SingleTopicPage = () => {
@@ -76,7 +76,7 @@ const SingleTopicPage = () => {
             <NewPostForm
               msg={msg}
               setMsg={setMsg}
-              sendPostClicked={sendPostClicked}
+              sendClicked={sendPostClicked}
             />
           </div>
         </div>

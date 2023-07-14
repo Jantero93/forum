@@ -82,7 +82,14 @@ public class AuthenticationService {
                 .build();
     }
 
-    public UserDetails getRequestUserDetails() {
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getAuthenticatedRequestUser() {
+        var userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userRepository.findByEmail(userDetails.getUsername());
+
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user found");
+        }
+
+        return user.get();
     }
 }

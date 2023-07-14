@@ -1,22 +1,52 @@
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import TopicCard from './TopicCard';
-import { BoardTopicsDto } from '~/data/apiTypes';
+import { BoardTopicsDto, TopicDto } from '~/data/apiTypes';
 import env from '~/util/env';
 import { useFetch } from '~/hooks/useFetch';
+import NewPostForm from '../../components/NewPostForm';
 
 const TopicsPage = () => {
-  const { name } = useParams();
+  const [message, setMessage] = useState('');
+  const [heading, setHeading] = useState('');
+
+  const { name: boardName } = useParams();
+  const navigate = useNavigate();
 
   const { data: response, sendRequest } = useFetch<BoardTopicsDto>(
-    `${env.API_URL}/board?name=${name}`
+    `${env.API_URL}/board?name=${boardName}`
+  );
+
+  const fetchConfig = {
+    method: 'POST',
+    payload: {
+      message,
+      heading,
+      boardName
+    }
+  } as const;
+
+  const { data: postResponse, sendRequest: postTopic } = useFetch<TopicDto>(
+    `${env.API_URL}/topics/topic`,
+    fetchConfig
   );
 
   // Force api call when route changes
   useEffect(() => {
     sendRequest();
-  }, [name]);
+  }, [boardName]);
+
+  useEffect(() => {
+    if (postResponse) {
+      navigate(`${postResponse.id}`);
+    }
+  }, [postResponse]);
+
+  const sendTopicClicked = (e: React.MouseEvent) => {
+    e.preventDefault();
+    postTopic();
+  };
 
   return (
     <NavbarLayout>
@@ -44,6 +74,13 @@ const TopicsPage = () => {
               )
             )}
           </div>
+          <NewPostForm
+            msg={message}
+            setMsg={setMessage}
+            heading={heading}
+            setHeading={setHeading}
+            sendClicked={sendTopicClicked}
+          />
         </div>
       </div>
     </NavbarLayout>
