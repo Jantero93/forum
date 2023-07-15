@@ -1,19 +1,18 @@
 import { useRouteError } from 'react-router-dom';
-import NavbarLayout from '~/components/navbar/NavbarLayout';
 
 type ErrorMsg = { message: string; statusText: string; data: string };
 
-const ErrorPage = () => {
+type ErrorPageProps = { message: string };
+
+const ErrorPage = ({ message }: ErrorPageProps) => {
   const error = useRouteError() as ErrorMsg;
 
+  console.log('error', error);
+
+  const errorMessageText = `Error: ${message} , try later again`;
+
   return (
-    <NavbarLayout>
-      <div className="flex text-4xl text-purple-300">
-        <p>
-          <i>{error.data || error.message || error.statusText}</i>
-        </p>
-      </div>
-    </NavbarLayout>
+    <div className="flex justify-center p-5 text-4xl">{errorMessageText}</div>
   );
 };
 

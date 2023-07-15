@@ -1,5 +1,6 @@
 package com.example.fullstackforum.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,15 @@ public class ExceptionHandlerController {
         var body = new ExceptionResponse(ex.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    public ResponseEntity<ExceptionResponse> jwtExpiredException(ExpiredJwtException exception) {
+        log.error("JWT expired: {}", exception.getMessage());
+
+        var body = new ExceptionResponse(exception.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 }
 

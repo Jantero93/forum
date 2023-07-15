@@ -8,6 +8,13 @@ export type FetchConfig = {
   payload?: any;
 };
 
+type ErrorResponse = {
+  timestamp: string;
+  status: number;
+  error: string;
+  message: string;
+};
+
 /**
  * Utility for fetching data. If config is given, api call have to be triggered
  * with sendRequest method
@@ -18,7 +25,7 @@ export type FetchConfig = {
 export const useFetch = <T,>(url: string, config?: FetchConfig) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { token: authorizationHeader } = useAuth();
 
@@ -46,10 +53,16 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
 
       const response = await fetch(url, options);
 
+      if (!response?.ok) {
+        const res = (await response.json()) as ErrorResponse;
+        setError(res.message);
+        return;
+      }
+
       const jsonData = await response.json();
       setData(jsonData);
     } catch (error) {
-      setError(error);
+      setError('Internal Server Error');
     } finally {
       setLoading(false);
     }

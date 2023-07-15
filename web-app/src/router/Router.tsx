@@ -10,11 +10,11 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage message="internal server error" />,
     children: [
       {
         path: '/',
-        element: <BoardPage />,
-        errorElement: <ErrorPage />
+        element: <BoardPage />
       },
       {
         path: '/:name',

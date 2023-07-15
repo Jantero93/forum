@@ -3,12 +3,20 @@ import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { BoardDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
+import ErrorPage from '../ErrorPage';
 
 const BoardPage = () => {
-  const { data, loading } = useFetch<BoardDto[]>(`${env.API_URL}/boards`);
+  const { data, loading, error } = useFetch<BoardDto[]>(
+    `${env.API_URL}/boards`
+  );
 
   if (loading) {
     return null;
+  }
+
+  if (error) {
+    console.log('error board page', error);
+    return <ErrorPage message={error} />;
   }
 
   return (

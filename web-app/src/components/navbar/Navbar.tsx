@@ -8,6 +8,7 @@ import LogInForm from './LogInForm';
 import SignUpModal from '../SignUpModal';
 import { useAuth } from '~/hooks/useAuth';
 import { useFetch } from '~/hooks/useFetch';
+import ErrorPage from '~/pages/ErrorPage';
 
 type LoginResponse = { token: string };
 type RegisterResponse = { token: string };
@@ -35,7 +36,9 @@ const Navbar = () => {
       payload: { email: password, password } as const
     });
 
-  const { data: boardResponse } = useFetch<BoardDto[]>(`${env.API_URL}/boards`);
+  const { data: boardResponse, error } = useFetch<BoardDto[]>(
+    `${env.API_URL}/boards`
+  );
 
   useEffect(() => {
     if (loginResponse?.token) {
@@ -86,6 +89,10 @@ const Navbar = () => {
       />
     );
   };
+
+  if (error) {
+    return <ErrorPage message={error} />;
+  }
 
   return (
     <nav
