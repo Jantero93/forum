@@ -10,6 +10,7 @@ import { useAuth } from '~/hooks/useAuth';
 import { useFetch } from '~/hooks/useFetch';
 
 type LoginResponse = { token: string };
+type RegisterResponse = { token: string };
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -28,6 +29,12 @@ const Navbar = () => {
     }
   );
 
+  const { data: registerResponse, sendRequest: sendRegisterReqeust } =
+    useFetch<RegisterResponse>(`${env.API_URL}/auth/register`, {
+      method: 'POST',
+      payload: { email: password, password } as const
+    });
+
   const { data: boardResponse } = useFetch<BoardDto[]>(`${env.API_URL}/boards`);
 
   useEffect(() => {
@@ -36,6 +43,13 @@ const Navbar = () => {
     }
   }, [loginResponse]);
 
+  useEffect(() => {
+    if (registerResponse?.token) {
+      logInUser(registerResponse.token);
+      setShowSignIn(false);
+    }
+  }, [registerResponse]);
+
   const handleSignInModalClick = () => setShowSignIn(true);
 
   const handleLogInClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -43,10 +57,23 @@ const Navbar = () => {
     sendRequest();
   };
 
+  const handleRegisterClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    sendRegisterReqeust();
+  };
+
   const handleLogOutClick = () => logOutUser();
 
   const formOrLoggedInComponent = (): JSX.Element => {
-    if (showSignIn) return <SignUpModal setShowModal={setShowSignIn} />;
+    if (showSignIn)
+      return (
+        <SignUpModal
+          setPassword={setPassword}
+          setEmail={setEmail}
+          setShowModal={setShowSignIn}
+          handleRegisterClick={handleRegisterClick}
+        />
+      );
 
     return isLogged ? (
       <SignedInCard handleLogOutClick={handleLogOutClick} />
