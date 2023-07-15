@@ -1,4 +1,9 @@
 {
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -42,14 +47,6 @@
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
-      }
-    ],
-    "@typescript-eslint/no-misused-promises": [
-      2,
-      {
-        "checksVoidReturn": {
-          "attributes": false
-        }
       }
     ],
     "react-hooks/rules-of-hooks": "error",

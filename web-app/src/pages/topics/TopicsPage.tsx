@@ -14,9 +14,11 @@ const TopicsPage = () => {
   const { name: boardName } = useParams();
   const navigate = useNavigate();
 
-  const { data: response, sendRequest } = useFetch<BoardTopicsDto>(
-    `${env.API_URL}/board?name=${boardName}`
-  );
+  const {
+    data: response,
+    sendRequest,
+    loading
+  } = useFetch<BoardTopicsDto>(`${env.API_URL}/board?name=${boardName}`);
 
   const fetchConfig = {
     method: 'POST',
@@ -27,7 +29,7 @@ const TopicsPage = () => {
     }
   } as const;
 
-  const { data: postResponse, sendRequest: postTopic } = useFetch<TopicDto>(
+  const { data: topicResponse, sendRequest: postTopic } = useFetch<TopicDto>(
     `${env.API_URL}/topics/topic`,
     fetchConfig
   );
@@ -35,18 +37,23 @@ const TopicsPage = () => {
   // Force api call when route changes
   useEffect(() => {
     sendRequest();
-  }, [boardName]);
+  }, [boardName, sendRequest]);
 
+  // Open new created topic
   useEffect(() => {
-    if (postResponse) {
-      navigate(`${postResponse.id}`);
+    if (topicResponse) {
+      navigate(`${topicResponse.id}`);
     }
-  }, [postResponse]);
+  }, [topicResponse, navigate]);
 
   const sendTopicClicked = (e: React.MouseEvent) => {
     e.preventDefault();
     postTopic();
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <NavbarLayout>

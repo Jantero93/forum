@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -22,7 +22,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
 
   const { token: authorizationHeader } = useAuth();
 
-  const sendRequest = async () => {
+  const sendRequest = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -53,7 +53,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [authorizationHeader, config, url]);
 
   useEffect(() => {
     // Disable automatic fetching if config is present
@@ -62,7 +62,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
     }
 
     sendRequest();
-  }, [url, config?.method, config?.payload]);
+  }, [url, config?.method, config?.payload, config, sendRequest]);
 
   return { data, loading, error, sendRequest };
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { dateFormatForum } from '~/util/consts';
 import { formatDate } from '~/util/dateHelpers';
 

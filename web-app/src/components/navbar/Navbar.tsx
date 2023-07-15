@@ -41,14 +41,14 @@ const Navbar = () => {
     if (loginResponse?.token) {
       logInUser(loginResponse.token);
     }
-  }, [loginResponse]);
+  }, [loginResponse, logInUser]);
 
   useEffect(() => {
     if (registerResponse?.token) {
       logInUser(registerResponse.token);
       setShowSignIn(false);
     }
-  }, [registerResponse]);
+  }, [registerResponse, logInUser]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 

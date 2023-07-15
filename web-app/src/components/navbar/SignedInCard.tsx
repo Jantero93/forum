@@ -1,5 +1,3 @@
-import React from 'react';
-
 type SignedInCardProps = { handleLogOutClick: () => void };
 
 const SignedInCard = ({ handleLogOutClick }: SignedInCardProps) => {

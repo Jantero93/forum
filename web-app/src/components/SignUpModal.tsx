@@ -1,7 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useAuth } from '~/hooks/useAuth';
-import { useFetch } from '~/hooks/useFetch';
-import env from '~/util/env';
+import { Dispatch, SetStateAction } from 'react';
 
 type SignUpModalProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
