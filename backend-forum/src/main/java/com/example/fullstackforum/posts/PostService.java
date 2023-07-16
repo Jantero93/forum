@@ -17,14 +17,12 @@ public class PostService {
     private final TopicService topicService;
     private final AuthenticationService authenticationService;
     private final PostMapper postMapper;
-    private final UserService userService;
 
     public PostDto savePost(NewPostRequest requestBody) {
         log.info("Creating new post with data: {}", requestBody);
         var user = authenticationService.getAuthenticatedRequestUser();
 
         var topic = topicService.getTopicById(requestBody.topicId());
-
 
         var post = Post.builder()
                 .message(requestBody.message())

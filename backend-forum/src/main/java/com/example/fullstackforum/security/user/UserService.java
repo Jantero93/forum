@@ -2,9 +2,7 @@ package com.example.fullstackforum.security.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Slf4j
@@ -17,9 +15,14 @@ public class UserService {
 
         if (userDb.isEmpty()) {
             log.warn("No user with email: {}" + email);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            return null;
         }
 
         return userDb.get();
+    }
+
+    public User saveUser(User user) {
+        log.info("Saving user {}", user.getEmail());
+        return userRepository.save(user);
     }
 }

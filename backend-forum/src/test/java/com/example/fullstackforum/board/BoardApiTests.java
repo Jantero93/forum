@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BoardApiTests {
+class BoardApiTests {
 
     @Autowired
     private BoardRepository boardRepository;
@@ -39,7 +39,7 @@ public class BoardApiTests {
     private static final String url = "http://localhost:8080/api/";
 
     @Test
-    public void testFindAllBoards_ShouldReturnOk() {
+    void testFindAllBoards_ShouldReturnOk() {
         var mockUpBoard = dataFakerService.generateMockupBoard();
 
         boardRepository.save(mockUpBoard);
@@ -92,7 +92,7 @@ public class BoardApiTests {
 
         assertNotNull(body);
 
-        assertEquals(statusCode, HttpStatus.OK);
+        assertEquals(HttpStatus.OK, statusCode);
         assertEquals(body.id(), boardDb.getId());
         assertEquals(body.adjective(), boardDb.getDescription());
         assertEquals(body.name(), boardDb.getName());

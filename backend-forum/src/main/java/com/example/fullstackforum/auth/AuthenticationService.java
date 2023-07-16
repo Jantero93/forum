@@ -3,7 +3,7 @@ package com.example.fullstackforum.auth;
 import com.example.fullstackforum.security.JwtService;
 import com.example.fullstackforum.security.user.Role;
 import com.example.fullstackforum.security.user.User;
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.security.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,18 +19,17 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationService {
-
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         log.info("Registering request: " + request);
 
-        var userDb = userRepository.findByEmail(request.getEmail());
+        var userDb = userService.getUserByEmail(request.getEmail());
 
-        if (userDb.isPresent()) {
+        if (userDb != null) {
             log.warn("Creating new user failed, user exists already: {}", request.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already registered");
         }
@@ -41,7 +40,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-        var savedUser = userRepository.save(user);
+        var savedUser = userService.saveUser(user);
 
         log.info("User registration successful: {}", savedUser.getEmail());
 
@@ -70,8 +69,12 @@ public class AuthenticationService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
 
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+        var user = userService.getUserByEmail(request.getEmail());
+
+        if (user == null) {
+            log.warn("No user found with email: {}", request.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No user found with email: " + request.getEmail());
+        }
 
         var jwtToken = jwtService.generateToken(user);
 
@@ -84,12 +87,12 @@ public class AuthenticationService {
 
     public User getAuthenticatedRequestUser() {
         var userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var user = userRepository.findByEmail(userDetails.getUsername());
+        var user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user.isEmpty()) {
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user found");
         }
 
-        return user.get();
+        return user;
     }
 }

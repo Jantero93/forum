@@ -24,7 +24,7 @@ public class JwtService {
     private static final int ONE_DAY_MILLISECONDS = 60 * 1000 * 60 * 24;
 
     @Value("${JWT_TOKEN_SECRET}")
-    private String SECRET_KEY;
+    private String secret_key;
 
     public String extractUsername(String jwtToken) {
         log.info("Extracting from username from JWT token (JwtService)");
@@ -83,7 +83,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secret_key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
