@@ -54,7 +54,6 @@ class BoardApiTests {
                 }
         );
 
-
         assertNotNull(res.getBody());
 
         var testBoardFromDb = res.getBody().stream()
@@ -76,7 +75,6 @@ class BoardApiTests {
         var mockUpTopic = dataFakerService.generateMockupTopic();
         var mockUpUser = dataFakerService.generateMockupUser();
 
-
         var userDb = userRepository.save(mockUpUser);
         var boardDb = boardRepository.save(mockUpBoard);
         mockUpTopic.setBoard(boardDb);
@@ -93,7 +91,6 @@ class BoardApiTests {
         var statusCode = res.getStatusCode();
 
         assertNotNull(body);
-
         assertEquals(HttpStatus.OK, statusCode);
         assertEquals(body.id(), boardDb.getId());
         assertEquals(body.adjective(), boardDb.getDescription());
@@ -102,12 +99,10 @@ class BoardApiTests {
         var topic = body.topics().stream().findFirst().orElse(null);
 
         assertNotNull(topic);
-
         assertEquals(topic.id(), mockUpTopic.getId());
         assertEquals(topic.header(), mockUpTopic.getHeading());
         assertEquals(topic.message(), mockUpTopic.getMessage());
         assertEquals(topic.createdTime().getTime(), mockUpTopic.getCreatedTime().getTime());
-
 
         topicRepository.deleteById(topic.id());
         userRepository.delete(userDb);

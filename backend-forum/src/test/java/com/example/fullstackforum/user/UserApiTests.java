@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +46,6 @@ class UserApiTests {
 
 
         Assertions.assertNotNull(body);
-
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
         Assertions.assertFalse(body.getToken().isEmpty());
         Assertions.assertFalse(body.getToken().isBlank());
@@ -57,7 +55,6 @@ class UserApiTests {
         Assertions.assertTrue(userDb.isPresent());
 
         userRepository.delete(userDb.get());
-        userRepository.save(User.builder().email("mororor").build());
     }
 
     @Test
@@ -82,7 +79,6 @@ class UserApiTests {
 
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
         Assertions.assertNotNull(body);
-
         Assertions.assertFalse(body.getToken().isEmpty());
         Assertions.assertFalse(body.getToken().isBlank());
 
