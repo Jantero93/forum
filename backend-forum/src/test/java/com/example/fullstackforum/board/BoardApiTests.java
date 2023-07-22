@@ -1,15 +1,16 @@
 package com.example.fullstackforum.board;
 
+import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.db.DataFakerService;
 import com.example.fullstackforum.security.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,12 +32,13 @@ class BoardApiTests {
     private UserRepository userRepository;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     @Autowired
     private DataFakerService dataFakerService;
 
-    private static final String url = "http://localhost:8080/api/";
+    @Autowired
+    private TestConfig testConfig;
 
     @Test
     void testFindAllBoards_ShouldReturnOk() {
@@ -45,7 +47,7 @@ class BoardApiTests {
         boardRepository.save(mockUpBoard);
 
         var res = restTemplate.exchange(
-                url + "boards",
+                testConfig.getApiUrl() + "boards",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<BoardDto>>() {
@@ -81,7 +83,7 @@ class BoardApiTests {
         mockUpTopic.setUser(userDb);
         topicRepository.save(mockUpTopic);
 
-        var getUrl = url + "board?name=" + mockUpBoard.getName();
+        var getUrl = testConfig.getApiUrl() + "board?name=" + mockUpBoard.getName();
         var res = restTemplate.getForEntity(
                 getUrl,
                 BoardTopicsDto.class

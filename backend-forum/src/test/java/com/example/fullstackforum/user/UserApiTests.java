@@ -3,6 +3,7 @@ package com.example.fullstackforum.user;
 import com.example.fullstackforum.auth.AuthenticationReqeust;
 import com.example.fullstackforum.auth.AuthenticationResponse;
 import com.example.fullstackforum.auth.RegisterRequest;
+import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.security.user.Role;
 import com.example.fullstackforum.security.user.User;
 import com.example.fullstackforum.security.user.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,14 +29,15 @@ class UserApiTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final String URL = "http://localhost:8080/api/";
+    @Autowired
+    private TestConfig testConfig;
 
     @Test
     void registerUser_ShouldReturnOk() {
         var requestBody = new RegisterRequest("test@email.com", "abcd");
 
         var res = restTemplate.postForEntity(
-                URL + "auth/register",
+                testConfig.getApiUrl() + "auth/register",
                 requestBody,
                 AuthenticationResponse.class
 
@@ -42,10 +45,10 @@ class UserApiTests {
 
         var body = res.getBody();
 
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
 
         Assertions.assertNotNull(body);
 
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
         Assertions.assertFalse(body.getToken().isEmpty());
         Assertions.assertFalse(body.getToken().isBlank());
 
@@ -54,6 +57,7 @@ class UserApiTests {
         Assertions.assertTrue(userDb.isPresent());
 
         userRepository.delete(userDb.get());
+        userRepository.save(User.builder().email("mororor").build());
     }
 
     @Test
@@ -69,7 +73,7 @@ class UserApiTests {
         var userDb = userRepository.save(mockUpUser);
 
         var res = restTemplate.postForEntity(
-                URL + "auth/authenticate",
+                testConfig.getApiUrl() + "auth/authenticate",
                 requestBody,
                 AuthenticationResponse.class
         );

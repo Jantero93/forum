@@ -9,13 +9,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class FullstackforumApplicationTests {
 
 	@Test
-	public void dummyTest() {
+	void dummyTest() {
 		var foo = "TEST_STRING";
 		assertThat(foo).isNotNull();
 	}
 
 	@Test
-	public void dummyTdest() {
+	void dummyTdest() {
 		var foo = "TEST_STRING";
 		assertThat(foo).isNotNull();
 	}
