@@ -1,7 +1,6 @@
 package com.example.fullstackforum.posts;
 
 import com.example.fullstackforum.auth.AuthenticationService;
-import com.example.fullstackforum.security.user.UserService;
 import com.example.fullstackforum.topic.TopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

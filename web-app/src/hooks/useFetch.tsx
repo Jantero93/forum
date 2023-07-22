@@ -40,10 +40,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
       if (authorizationHeader) {
         headers['authorization'] = `Bearer ${authorizationHeader}`;
       }
-
-      if (method === 'POST' || method === 'PUT') {
-        headers['content-type'] = 'application/json';
-      }
+      headers['content-type'] = 'application/json';
 
       const options: RequestInit = {
         method,

@@ -4,7 +4,6 @@ import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,5 +23,5 @@ public class Board {
     private String description;
 
     @OneToMany(mappedBy = "board")
-    private List<Topic> topics = new ArrayList<>();
+    private List<Topic> topics;
 }

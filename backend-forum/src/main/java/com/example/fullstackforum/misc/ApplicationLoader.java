@@ -24,7 +24,9 @@ public class ApplicationLoader implements ApplicationRunner {
 
         log.info("Active profiles: {}", activeProfiles);
 
-        if (activeProfiles.contains("dev")) {
+        var isDevOrProdProfile = activeProfiles.contains("dev") || activeProfiles.contains("prod");
+
+        if (isDevOrProdProfile) {
             dataFakerService.generateDbInitializationData();
         } else {
             log.info("No 'dev' profile, skipping data initialization");
