@@ -15,7 +15,6 @@ const BoardPage = () => {
   }
 
   if (error) {
-    console.log('error board page', error);
     return <ErrorPage message={error} />;
   }
 

@@ -55,6 +55,23 @@ const TopicsPage = () => {
     return null;
   }
 
+  if (!response?.topics.length) {
+    return (
+      <div className="flex flex-col justify-center flex-grow ">
+        <h1 className="self-center mb-10 text-2xl text-slate-200">
+          No topics yet...
+        </h1>
+        <NewPostForm
+          msg={message}
+          setMsg={setMessage}
+          heading={heading}
+          setHeading={setHeading}
+          sendClicked={sendTopicClicked}
+        />
+      </div>
+    );
+  }
+
   return (
     <NavbarLayout>
       <div className="flex justify-center flex-grow">
