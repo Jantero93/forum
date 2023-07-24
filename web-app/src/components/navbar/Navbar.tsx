@@ -16,6 +16,7 @@ type RegisterResponse = { token: string };
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [email, setEmail] = useState('');
+  const [logOutClicked, setLogOutClicked] = useState(false);
   const [password, setPassword] = useState('');
   const { isLogged, logInUser, logOutUser } = useAuth();
 
@@ -41,31 +42,43 @@ const Navbar = () => {
   );
 
   useEffect(() => {
-    if (loginResponse?.token) {
+    if (loginResponse?.token && !logOutClicked) {
       logInUser(loginResponse.token);
     }
-  }, [loginResponse, logInUser]);
+  }, [loginResponse, logInUser, logOutClicked]);
 
   useEffect(() => {
-    if (registerResponse?.token) {
+    if (registerResponse?.token && !logOutClicked) {
       logInUser(registerResponse.token);
       setShowSignIn(false);
     }
-  }, [registerResponse, logInUser]);
+  }, [registerResponse, logInUser, logOutClicked]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 
   const handleLogInClick = (e: React.MouseEvent<HTMLElement>) => {
+    setLogOutClicked(false);
     e.preventDefault();
     sendRequest();
+    clearInputs();
   };
 
   const handleRegisterClick = (e: React.MouseEvent<HTMLElement>) => {
+    setLogOutClicked(false);
     e.preventDefault();
     sendRegisterReqeust();
+    clearInputs();
   };
 
-  const handleLogOutClick = () => logOutUser();
+  const handleLogOutClick = () => {
+    setLogOutClicked(true);
+    logOutUser();
+  };
+
+  const clearInputs = () => {
+    setEmail('');
+    setPassword('');
+  };
 
   const formOrLoggedInComponent = (): JSX.Element => {
     if (showSignIn)

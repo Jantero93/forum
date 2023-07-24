@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { isBefore } from '~/util/dateHelpers';
 import { decodeJwtClaims } from '~/util/jwt';
 import { useLocalStorage } from './useLocalStorage';
 
@@ -7,20 +8,20 @@ export const useAuth = () => {
     useLocalStorage<string>('JWT_TOKEN');
 
   const [isLogged, setIsLogged] = useState(!!localStorageItem);
-  const [role, setRole] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const token = localStorageItem;
 
   const logInUser = (token: string) => {
     if (!token) {
       logOutUser();
-      setRole(null);
+      setUserRole(null);
       return;
     }
 
     const { role } = decodeJwtClaims(token);
 
-    setRole(role);
+    setUserRole(role);
     setLocalStorageItem(token);
     setIsLogged(true);
   };
@@ -28,8 +29,30 @@ export const useAuth = () => {
   const logOutUser = () => {
     setLocalStorageItem(null);
     setIsLogged(false);
-    setRole(null);
+    setUserRole(null);
   };
 
-  return { isLogged, logInUser, logOutUser, token, role };
+  const checkTokenExpiration = () => {
+    const token = localStorageItem;
+
+    if (token === null) {
+      logOutUser();
+      return;
+    }
+
+    const { exp } = decodeJwtClaims(token);
+
+    if (isBefore(exp, new Date())) {
+      logInUser(token);
+    }
+  };
+
+  return {
+    isLogged,
+    logInUser,
+    logOutUser,
+    token,
+    role: userRole,
+    checkTokenExpiration
+  };
 };
