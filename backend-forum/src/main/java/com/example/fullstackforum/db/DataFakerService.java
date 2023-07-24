@@ -38,6 +38,9 @@ public class DataFakerService {
         return new Faker();
     }
 
+    @Bean
+    public Random random() { return new Random(); }
+
 
     public Board generateMockupBoard() {
         return Board.builder()
@@ -160,7 +163,7 @@ public class DataFakerService {
                             .board(board)
                             .heading(fakeHeader)
                             .message(fakeMsg)
-                            .votes(getRandomNumber(1, 10))
+                            .votes(0)
                             .user(notUserAdmin)
                             .posts(null)
                             .build();
@@ -191,7 +194,6 @@ public class DataFakerService {
                     return Post.builder()
                             .topic(topic)
                             .message(fakeMsg)
-                            .votes(getRandomNumber(1, 20))
                             .user(fakeUser)
                             .build();
 
@@ -202,7 +204,7 @@ public class DataFakerService {
     }
 
     private int getRandomNumber(int start, int end) {
-        var rand = new Random();
+        var rand = random();
         return rand.nextInt((end - start) + 1) + start;
     }
 

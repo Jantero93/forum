@@ -8,8 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -26,6 +28,12 @@ public class Post {
     @Column(length = 8191)
     private String message;
 
+    @Formula("(" +
+            "SELECT COUNT(*) " +
+            "FROM posts p " +
+            "JOIN posts_users_ pt ON p.id = pt.voted_posts_id " +
+            "WHERE pt.voted_posts_id = id" +
+            ")")
     private Integer votes;
 
     @CreationTimestamp
@@ -37,4 +45,8 @@ public class Post {
 
     @ManyToOne()
     private Topic topic;
+
+    @ManyToMany()
+    private Set<User> votedUsers;
+
 }

@@ -18,7 +18,7 @@ const SingleTopicPage = () => {
     topicId: id
   } as const;
 
-  const { sendRequest, data } = useFetch<PostDto>(`${env.API_URL}/post`, {
+  const { sendRequest, data } = useFetch<PostDto>(`${env.API_URL}/posts`, {
     method: 'POST',
     payload: newPostPayload
   });

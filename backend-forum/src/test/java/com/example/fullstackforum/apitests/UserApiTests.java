@@ -1,4 +1,4 @@
-package com.example.fullstackforum.user;
+package com.example.fullstackforum.apitests;
 
 import com.example.fullstackforum.auth.AuthenticationReqeust;
 import com.example.fullstackforum.auth.AuthenticationResponse;

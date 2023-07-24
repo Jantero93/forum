@@ -15,13 +15,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "users_")
 public class User implements UserDetails {
 
     @Id
@@ -41,6 +42,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
+
+    @ManyToMany(mappedBy = "votedUsers")
+    private Set<Post> votedPosts;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,5 +1,8 @@
-package com.example.fullstackforum.board;
+package com.example.fullstackforum.apitests;
 
+import com.example.fullstackforum.board.BoardDto;
+import com.example.fullstackforum.board.BoardRepository;
+import com.example.fullstackforum.board.BoardTopicsDto;
 import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.db.DataFakerService;
 import com.example.fullstackforum.security.user.UserRepository;

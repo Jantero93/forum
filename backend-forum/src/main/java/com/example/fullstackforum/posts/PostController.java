@@ -1,10 +1,7 @@
 package com.example.fullstackforum.posts;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,8 +10,14 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("post")
+    @PostMapping("posts")
     public PostDto savePost(@RequestBody NewPostRequest request) {
         return postService.savePost(request);
     }
+
+    @PostMapping("posts/{id}/vote")
+    public PostDto addVoteToPost(@PathVariable Integer id) {
+        return postService.addVoteForPost(id);
+    }
 }
+
