@@ -15,7 +15,7 @@ export const isBefore = (
   const moment1 = typeof date === 'number' ? moment.unix(date) : moment(date);
   const moment2 =
     typeof dateToBeBefore === 'number'
-      ? moment(dateToBeBefore)
+      ? moment.unix(dateToBeBefore)
       : moment(dateToBeBefore);
 
   return moment(moment1).isBefore(moment2);
