@@ -26,3 +26,6 @@ tsconfig.tsbuildinfo
 
 # test coverage
 coverage/
+
+# env files
+.env.production

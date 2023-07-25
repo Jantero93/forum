@@ -6,6 +6,8 @@ COPY package*.json /app/
 RUN npm ci --silent
 ARG VITE_APP_API_URL
 ENV VITE_APP_API_URL $VITE_APP_API_URL
+ARG VITE_NODE_ENV
+ENV VITE_NODE_ENV $VITE_NODE_ENV
 COPY . /app
 RUN npm run build
 

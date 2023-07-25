@@ -7,11 +7,13 @@ export const formatDate = (date: MomentDateTypes, format: string) => {
   return momentObj.format(format);
 };
 
+export const formatDateFromIsoString = (date: string, format: string) =>
+  moment(date, moment.ISO_8601).format(format);
+
 export const isBefore = (
   date: MomentDateTypes,
   dateToBeBefore: MomentDateTypes
 ) => {
-  moment.suppressDeprecationWarnings = true;
   const moment1 = typeof date === 'number' ? moment.unix(date) : moment(date);
   const moment2 =
     typeof dateToBeBefore === 'number'
