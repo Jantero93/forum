@@ -58,8 +58,15 @@ public class PostService {
             );
         }
 
-        dbPost.getVotedUsers().add(reqUser);
+        var oldVotedUsers = dbPost.getVotedUsers();
+        oldVotedUsers.add(reqUser);
+        dbPost.setVotedUsers(oldVotedUsers);
+
         var savedVotePostDb = postRepository.save(dbPost);
+        // !FIX THIS SOME DAY!
+        // Dirty fix because hibernate can't update formula mapped values on same request
+        savedVotePostDb.setVotes(savedVotePostDb.getVotes() + 1);
+
         return postMapper.mapPostToPostDto(savedVotePostDb);
     }
 }

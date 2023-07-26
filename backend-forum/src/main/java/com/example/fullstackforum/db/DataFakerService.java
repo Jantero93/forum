@@ -55,7 +55,6 @@ public class DataFakerService {
                 .heading(faker().lorem().word())
                 .message(faker().lorem().sentence(10))
                 .posts(new ArrayList<>())
-                .votes(1)
                 .build();
     }
 
@@ -163,7 +162,6 @@ public class DataFakerService {
                             .board(board)
                             .heading(fakeHeader)
                             .message(fakeMsg)
-                            .votes(0)
                             .user(notUserAdmin)
                             .posts(null)
                             .build();

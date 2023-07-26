@@ -27,7 +27,6 @@ public class TopicMapper {
                 .id(topic.getId())
                 .header(topic.getHeading())
                 .message(topic.getMessage())
-                .votes(topic.getVotes())
                 .posts(
                         topic.getPosts().stream().map(postMapper::mapPostToPostDto).toList()
                 ).build();
