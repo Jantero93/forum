@@ -9,6 +9,7 @@ export const useAuth = () => {
 
   const [isLogged, setIsLogged] = useState(!!localStorageItem);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
 
   const token = localStorageItem;
 
@@ -19,17 +20,19 @@ export const useAuth = () => {
       return;
     }
 
-    const { role } = decodeJwtClaims(token);
+    const { role, sub } = decodeJwtClaims(token);
 
     setUserRole(role);
+    setUsername(sub);
     setLocalStorageItem(token);
     setIsLogged(true);
   };
 
   const logOutUser = () => {
+    setUserRole(null);
+    setUsername(null);
     setLocalStorageItem(null);
     setIsLogged(false);
-    setUserRole(null);
   };
 
   const checkTokenExpiration = () => {
@@ -53,6 +56,7 @@ export const useAuth = () => {
     logOutUser,
     token,
     role: userRole,
+    username,
     checkTokenExpiration
   };
 };

@@ -18,7 +18,10 @@ const Navbar = () => {
   const [email, setEmail] = useState('');
   const [logOutClicked, setLogOutClicked] = useState(false);
   const [password, setPassword] = useState('');
-  const { isLogged, logInUser, logOutUser } = useAuth();
+
+  const { isLogged, logInUser, logOutUser, username } = useAuth();
+
+  console.log('username', username);
 
   const loginUrl = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };

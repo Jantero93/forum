@@ -28,11 +28,11 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 
 > - Spring Boot 3.1.2 (Java 17)
 > - Hibernate (PostgreSQL; using 15.1, other versions should be fine)
-> - Controller - Service - Repository -pattern
+> - Controller-Service-Repository -pattern
 
 <h3>Others</h3>
 
-> - Docker (not needed for local developing, only used for settings prodcution application)
+> - Docker (not needed for local developing, only used for creating prodcution application)
 
 ---
 
@@ -100,7 +100,7 @@ Run tests with command
 `npm test`
 
 <h3>Backend</h3>
-<p>Start Spring Boot instance on port 8080. After that in backend-forum folder run command. Api tests will be run against on instance on port 800</p>
+<p>Start Spring Boot instance on port 8080. After that in backend-forum folder run commands. Api tests will be run against on instance on port 800</p>
 
 Start Spring boot instance with command
 `mvn spring-boot:run -Dspring-boot.run.profiles=test`
