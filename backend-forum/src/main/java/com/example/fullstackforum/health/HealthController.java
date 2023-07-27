@@ -13,7 +13,7 @@ public class HealthController {
 
     private final HealthService healthService;
 
-    @GetMapping("/database")
+    @GetMapping("")
     Health getDatabaseHealth() {
         return healthService.health();
     }

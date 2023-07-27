@@ -1,6 +1,7 @@
 package com.example.fullstackforum.health;
 
-import com.example.fullstackforum.security.user.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.health.Health;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class HealthService implements HealthIndicator, HealthContributor {
 
-    private final UserRepository userRepository;
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public Health getHealth(boolean includeDetails) {
@@ -22,12 +24,19 @@ public class HealthService implements HealthIndicator, HealthContributor {
 
     @Override
     public Health health() {
-        log.info("Checking health status");
+        log.info("Checking health status of services");
+        return checkDatabaseHealthStatus();
+    }
+
+    private Health checkDatabaseHealthStatus() {
+        log.info("Checking health status of database");
 
         try {
-            if (userRepository.count() >= 0) {
+            var result = entityManager.createQuery("SELECT 1").getSingleResult();
+            if ((int) result != 1) {
                 log.info("Health status ok");
             }
+
         } catch (Exception e) {
             log.error("Health status error: {}", e.getMessage());
             return Health.outOfService().withException(e).build();
