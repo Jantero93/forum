@@ -6,6 +6,7 @@ import { BoardTopicsDto, TopicDto } from '~/data/apiTypes';
 import env from '~/util/env';
 import { useFetch } from '~/hooks/useFetch';
 import NewPostForm from '../../components/NewPostForm';
+import { useAuthHooks } from '~/contexts/AuthContext';
 
 const TopicsPage = () => {
   const [message, setMessage] = useState('');
@@ -13,6 +14,12 @@ const TopicsPage = () => {
 
   const { name: boardName } = useParams();
   const navigate = useNavigate();
+
+  const { useAuthState, useUpdateAuthState } = useAuthHooks;
+
+  const state = useAuthState();
+
+  console.log('state', state);
 
   const {
     data: response,
