@@ -1,43 +1,15 @@
-import { useState } from 'react';
 import { isBefore } from '~/util/dateHelpers';
 import { decodeJwtClaims } from '~/util/jwt';
 import { useLocalStorage } from './useLocalStorage';
 
 export const useAuth = () => {
-  const { localStorageItem, setLocalStorageItem } =
+  const { localStorageItem: token, setLocalStorageItem: setTokenLocalStorage } =
     useLocalStorage<string>('JWT_TOKEN');
 
-  const [isLogged, setIsLogged] = useState(!!localStorageItem);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-
-  const token = localStorageItem;
-
-  const logInUser = (token: string) => {
-    if (!token) {
-      logOutUser();
-      setUserRole(null);
-      return;
-    }
-
-    const { role, sub } = decodeJwtClaims(token);
-
-    setUserRole(role);
-    setUsername(sub);
-    setLocalStorageItem(token);
-    setIsLogged(true);
-  };
-
-  const logOutUser = () => {
-    setUserRole(null);
-    setUsername(null);
-    setLocalStorageItem(null);
-    setIsLogged(false);
-  };
+  const logInUser = (token: string) => setTokenLocalStorage(token);
+  const logOutUser = () => setTokenLocalStorage(null);
 
   const checkTokenExpiration = () => {
-    const token = localStorageItem;
-
     if (token === null) {
       logOutUser();
       return;
@@ -45,18 +17,30 @@ export const useAuth = () => {
 
     const { exp } = decodeJwtClaims(token);
 
-    if (isBefore(exp, new Date())) {
-      logInUser(token);
-    }
+    isBefore(new Date(), exp) ? logInUser(token) : logOutUser();
   };
 
+  if (!token) {
+    return {
+      isLogged: false,
+      logInUser,
+      logOutUser,
+      token: null,
+      role: null,
+      username: null,
+      checkTokenExpiration
+    };
+  }
+
+  const { sub, role } = decodeJwtClaims(token);
+
   return {
-    isLogged,
+    isLogged: !!token,
     logInUser,
     logOutUser,
     token,
-    role: userRole,
-    username,
+    role,
+    username: sub,
     checkTokenExpiration
   };
 };
