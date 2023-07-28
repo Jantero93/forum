@@ -1,10 +1,19 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
+import AuthContext from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
+
+import { useAuthHooks } from './contexts/AuthContext';
 
 const App = () => {
   const { checkTokenExpiration } = useAuth();
+
+  const { useAuthState, useUpdateAuthState } = useAuthHooks;
+
+  const test = useAuthState();
+
+  console.log('test', test);
 
   useEffect(() => {
     checkTokenExpiration();
