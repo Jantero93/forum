@@ -86,13 +86,18 @@ public class AuthenticationService {
     }
 
     public User getAuthenticatedRequestUser() {
-        var userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var user = userService.getUserByEmail(userDetails.getUsername());
+        try {
+            var userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (user == null) {
+            var user = userService.getUserByEmail(userDetails.getUsername());
+
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user found");
+            }
+
+            return user;
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user found");
         }
-
-        return user;
     }
 }

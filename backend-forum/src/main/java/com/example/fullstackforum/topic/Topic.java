@@ -29,7 +29,6 @@ public class Topic {
 
     @Column(length = 8191)
     private String message;
-    private Integer votes;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

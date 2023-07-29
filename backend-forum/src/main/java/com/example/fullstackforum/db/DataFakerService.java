@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -39,14 +38,16 @@ public class DataFakerService {
     }
 
     @Bean
-    public Random random() { return new Random(); }
+    public Random random() {
+        return new Random();
+    }
 
 
     public Board generateMockupBoard() {
         return Board.builder()
                 .description(faker().lorem().sentence(10))
                 .name(faker().lorem().word())
-                .topics(new ArrayList<>())
+                .topics(null)
                 .build();
     }
 
@@ -54,7 +55,7 @@ public class DataFakerService {
         return Topic.builder()
                 .heading(faker().lorem().word())
                 .message(faker().lorem().sentence(10))
-                .posts(new ArrayList<>())
+                .posts(null)
                 .build();
     }
 
@@ -65,9 +66,18 @@ public class DataFakerService {
                         passwordEncoder.encode(faker().internet().password())
                 )
                 .role(Role.USER)
-                .posts(new ArrayList<>())
-                .topics(new ArrayList<>())
-                .tokens(new ArrayList<>())
+                .posts(null)
+                .topics(null)
+                .tokens(null)
+                .build();
+    }
+
+    public Post generateMockupPost() {
+        return Post.builder()
+                .votes(0)
+                .topic(null)
+                .user(null)
+                .message(faker().lorem().word())
                 .build();
     }
 

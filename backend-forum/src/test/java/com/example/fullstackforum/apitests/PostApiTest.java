@@ -1,6 +1,7 @@
 package com.example.fullstackforum.apitests;
 
 
+import com.example.fullstackforum.board.BoardRepository;
 import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.db.DataFakerService;
 import com.example.fullstackforum.helpers.UserLoggedService;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
@@ -45,8 +47,11 @@ class PostApiTest {
     @Autowired
     private UserLoggedService userLoggedService;
 
+    @Autowired
+    private BoardRepository boardRepository;
+
     @Test
-    void savePostToTopic() {
+    void savePostToTopic_ShouldReturnOk() {
         final String username = "test.com";
         final String password = "123";
         var token = userLoggedService.createAndLogInTestUser(username, password);
@@ -92,10 +97,8 @@ class PostApiTest {
     }
 
     @Test
-    void addVoteForPost() {
-
+    void addVoteForPost_ShouldReturnOk() {
         // Set up
-
         final String username = "test.com";
         final String password = "123";
         var token = userLoggedService.createAndLogInTestUser(username, password);
@@ -134,7 +137,6 @@ class PostApiTest {
         Assertions.assertTrue(newPostBody.createdTime().before(new Date()));
 
         // Action
-
         HttpEntity<NewPostRequest> postReqEntity = new HttpEntity<>(
                 null, headers
         );
@@ -163,5 +165,29 @@ class PostApiTest {
         userLoggedService.deleteTestUser(username);
     }
 
+    @Test
+    void createPostWithoutToken_ShouldReturnUnauthorized() {
+        var mockUpUser = dataFakerService.generateMockupUser();
+        var dbUser = userRepository.save(mockUpUser);
+
+        var mockUpTopic = dataFakerService.generateMockupTopic();
+        mockUpTopic.setUser(dbUser);
+        var topicDb = topicRepository.save(mockUpTopic);
+
+        try {
+            var requestBody = new NewPostRequest("message", topicDb.getId());
+            var res = restTemplate.postForEntity(
+                    testConfig.getApiUrl() + "posts",
+                    requestBody,
+                    PostDto.class
+            );
+        } catch (HttpStatusCodeException ex) {
+            Assertions.assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+        }
+
+        topicRepository.delete(topicDb);
+        userRepository.delete(dbUser);
+    }
 
 }
+

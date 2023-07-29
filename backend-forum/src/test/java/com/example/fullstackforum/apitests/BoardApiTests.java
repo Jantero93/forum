@@ -73,7 +73,7 @@ class BoardApiTests {
     }
 
     @Test
-    void findBoardByName() {
+    void findBoardByName_ShouldReturnOk() {
         var mockUpBoard = dataFakerService.generateMockupBoard();
         var mockUpTopic = dataFakerService.generateMockupTopic();
         var mockUpUser = dataFakerService.generateMockupUser();
