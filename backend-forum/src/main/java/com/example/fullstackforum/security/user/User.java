@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -44,7 +43,7 @@ public class User implements UserDetails {
     private List<Post> posts;
 
     @ManyToMany(mappedBy = "votedUsers")
-    private Set<Post> votedPosts;
+    private List<Post> votedPosts;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

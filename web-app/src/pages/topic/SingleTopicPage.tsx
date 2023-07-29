@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
+import { useAuthState } from '~/contexts/AuthContextProvider';
 import { TopicWithPostsDto, PostDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
@@ -12,6 +13,7 @@ const SingleTopicPage = () => {
   const [posts, setPosts] = useState<PostDto[]>([]);
 
   const { id } = useParams();
+  const { isLogged } = useAuthState();
 
   const newPostPayload = {
     message: msg,
@@ -73,11 +75,13 @@ const SingleTopicPage = () => {
                 votes={votes}
               />
             ))}
-            <NewPostForm
-              msg={msg}
-              setMsg={setMsg}
-              sendClicked={sendPostClicked}
-            />
+            {isLogged && (
+              <NewPostForm
+                msg={msg}
+                setMsg={setMsg}
+                sendClicked={sendPostClicked}
+              />
+            )}
           </div>
         </div>
       </div>

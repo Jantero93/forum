@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
@@ -38,6 +39,7 @@ public class PostService {
         return postMapper.mapPostToPostDto(newPostDb);
     }
 
+    @Transactional
     public PostDto addVoteForPost(Integer postId) {
         var reqUser = authenticationService.getAuthenticatedRequestUser();
         var post = postRepository.findById(postId);
@@ -47,10 +49,10 @@ public class PostService {
         }
 
         var dbPost = post.get();
-        var votedUsers = dbPost.getVotedUsers();
+        var votedPosts = dbPost.getVotedUsers();
 
-        var usedVotedAlready = votedUsers.stream()
-                .anyMatch(user -> Objects.equals(user.getId(), reqUser.getId()));
+        var usedVotedAlready = votedPosts.stream()
+                .anyMatch(u -> Objects.equals(u.getId(), reqUser.getId()));
 
         if (usedVotedAlready) {
             throw new ResponseStatusException(
@@ -60,13 +62,15 @@ public class PostService {
 
         var oldVotedUsers = dbPost.getVotedUsers();
         oldVotedUsers.add(reqUser);
-        dbPost.setVotedUsers(oldVotedUsers);
 
+        dbPost.setVotedUsers(oldVotedUsers);
         var savedVotePostDb = postRepository.save(dbPost);
-        // !FIX THIS SOME DAY!
+        // TODO FIX THIS SOME DAY!
         // Dirty fix because hibernate can't update formula mapped values on same request
         savedVotePostDb.setVotes(savedVotePostDb.getVotes() + 1);
 
         return postMapper.mapPostToPostDto(savedVotePostDb);
+
+
     }
 }

@@ -3,18 +3,15 @@ package com.example.fullstackforum.posts;
 import com.example.fullstackforum.security.user.User;
 import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -50,6 +47,6 @@ public class Post {
     private Topic topic;
 
     @ManyToMany()
-    private Set<User> votedUsers;
+    private List<User> votedUsers;
 
 }

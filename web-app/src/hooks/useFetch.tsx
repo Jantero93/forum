@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from './useAuth';
+import { useAuthState } from '~/contexts/AuthContextProvider';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -27,7 +27,9 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { token: authorizationHeader } = useAuth();
+  const test = useAuthState();
+
+  const authorizationHeader = test.token;
 
   const sendRequest = useCallback(async () => {
     try {

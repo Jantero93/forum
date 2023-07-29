@@ -32,8 +32,12 @@ public class HealthService implements HealthIndicator, HealthContributor {
         log.info("Checking health status of database");
 
         try {
+            final int QUERY_RESULT = 1;
+
             var result = entityManager.createQuery("SELECT 1").getSingleResult();
-            if ((int) result != 1) {
+            var isCorrectTestResult = (int) result == QUERY_RESULT;
+
+            if (isCorrectTestResult) {
                 log.info("Health status ok");
             }
 
