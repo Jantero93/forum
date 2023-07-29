@@ -9,7 +9,6 @@ import com.example.fullstackforum.posts.PostDto;
 import com.example.fullstackforum.posts.PostRepository;
 import com.example.fullstackforum.security.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
-@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PostApiTest {
 
@@ -94,7 +92,7 @@ class PostApiTest {
     }
 
     @Test
-    void addVoteForPost(){
+    void addVoteForPost() {
 
         // Set up
 
@@ -164,7 +162,6 @@ class PostApiTest {
         topicRepository.deleteById(topicDb.getId());
         userLoggedService.deleteTestUser(username);
     }
-
 
 
 }

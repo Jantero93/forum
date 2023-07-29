@@ -8,7 +8,7 @@ import LogInForm from './LogInForm';
 import SignUpModal from '../SignUpModal';
 import { useFetch } from '~/hooks/useFetch';
 import ErrorPage from '~/pages/ErrorPage';
-import { useAuthHooks } from '~/contexts/AuthContext';
+import { useAuthContext } from '~/contexts/AuthContextProvider';
 
 type LoginResponse = { token: string };
 type RegisterResponse = { token: string };
@@ -19,9 +19,9 @@ const Navbar = () => {
   const [logOutClicked, setLogOutClicked] = useState(false);
   const [password, setPassword] = useState('');
 
-  const { useUpdateAuthState, useAuthState } = useAuthHooks;
-  const { isLogged } = useAuthState();
-  const updateAuthCtx = useUpdateAuthState();
+  const { authState } = useAuthContext();
+  const { isLogged } = authState;
+  const { updateAuthState } = useAuthContext();
 
   const loginUrl = `${env.API_URL}/auth/authenticate`;
   const payload = { email, password };
@@ -46,16 +46,16 @@ const Navbar = () => {
 
   useEffect(() => {
     if (loginResponse?.token && !logOutClicked) {
-      updateAuthCtx(loginResponse.token);
+      updateAuthState(loginResponse.token);
     }
-  }, [loginResponse, logOutClicked, updateAuthCtx]);
+  }, [loginResponse, logOutClicked, updateAuthState]);
 
   useEffect(() => {
     if (registerResponse?.token && !logOutClicked) {
-      updateAuthCtx(registerResponse.token);
+      updateAuthState(registerResponse.token);
       setShowSignIn(false);
     }
-  }, [registerResponse, logOutClicked, updateAuthCtx]);
+  }, [registerResponse, logOutClicked, updateAuthState]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 
@@ -75,7 +75,7 @@ const Navbar = () => {
 
   const handleLogOutClick = () => {
     setLogOutClicked(true);
-    updateAuthCtx(null);
+    updateAuthState(null);
   };
 
   const clearInputs = () => {

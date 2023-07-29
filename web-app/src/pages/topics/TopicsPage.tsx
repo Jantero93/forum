@@ -6,7 +6,7 @@ import { BoardTopicsDto, TopicDto } from '~/data/apiTypes';
 import env from '~/util/env';
 import { useFetch } from '~/hooks/useFetch';
 import NewPostForm from '../../components/NewPostForm';
-import { useAuthHooks } from '~/contexts/AuthContext';
+import { useAuthContext } from '~/contexts/AuthContextProvider';
 
 const TopicsPage = () => {
   const [message, setMessage] = useState('');
@@ -15,11 +15,8 @@ const TopicsPage = () => {
   const { name: boardName } = useParams();
   const navigate = useNavigate();
 
-  const { useAuthState, useUpdateAuthState } = useAuthHooks;
-
-  const state = useAuthState();
-
-  console.log('state', state);
+  const { authState } = useAuthContext();
+  const { isLogged } = authState;
 
   const {
     data: response,
@@ -68,13 +65,15 @@ const TopicsPage = () => {
         <h1 className="self-center mb-10 text-2xl text-slate-200">
           No topics yet...
         </h1>
-        <NewPostForm
-          msg={message}
-          setMsg={setMessage}
-          heading={heading}
-          setHeading={setHeading}
-          sendClicked={sendTopicClicked}
-        />
+        {isLogged && (
+          <NewPostForm
+            msg={message}
+            setMsg={setMessage}
+            heading={heading}
+            setHeading={setHeading}
+            sendClicked={sendTopicClicked}
+          />
+        )}
       </div>
     );
   }
@@ -105,13 +104,15 @@ const TopicsPage = () => {
               )
             )}
           </div>
-          <NewPostForm
-            msg={message}
-            setMsg={setMessage}
-            heading={heading}
-            setHeading={setHeading}
-            sendClicked={sendTopicClicked}
-          />
+          {isLogged && (
+            <NewPostForm
+              msg={message}
+              setMsg={setMessage}
+              heading={heading}
+              setHeading={setHeading}
+              sendClicked={sendTopicClicked}
+            />
+          )}
         </div>
       </div>
     </NavbarLayout>
