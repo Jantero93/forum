@@ -24,8 +24,8 @@ const LogInForm = ({
       />
       <input
         className="w-full p-1 mb-3 border rounded appearance-none mshadow"
-        name="Passowrd"
-        type="text"
+        name="Password"
+        type="password"
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
       />

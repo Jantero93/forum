@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_APP_API_URL: http://localhost:8080/api
-        VITE_NODE_ENV: production
+        VITE_NODE_ENV: prod
     ports:
       - 80:80
     depends_on:
