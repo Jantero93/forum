@@ -26,6 +26,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusCode, setStatusCode] = useState<number | null>(null);
 
   const { authState } = useAuthContext();
   const authorizationHeader = authState.token;
@@ -50,6 +51,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
       };
 
       const response = await fetch(url, options);
+      setStatusCode(response.status);
 
       if (!response?.ok) {
         const res = (await response.json()) as ErrorResponse;
@@ -75,5 +77,7 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
     sendRequest();
   }, [url, config?.method, config?.payload, config, sendRequest]);
 
-  return { data, loading, error, sendRequest };
+  const nullResponseError = () => setError('');
+
+  return { data, loading, error, statusCode, sendRequest, nullResponseError };
 };

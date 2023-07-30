@@ -182,7 +182,7 @@ class PostApiTest {
                     PostDto.class
             );
         } catch (HttpStatusCodeException ex) {
-            Assertions.assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+            Assertions.assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
         }
 
         topicRepository.delete(topicDb);

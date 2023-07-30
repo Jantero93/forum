@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/api/post/**", "api/topics/**")
+                .requestMatchers(HttpMethod.POST, "/api/post/**", "api/topics/**", "/api/posts/**")
                 .authenticated()
                 .and()
                 .authorizeHttpRequests()

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarLayout from '~/components/navbar/NavbarLayout';
 import { useAuthContext } from '~/contexts/AuthContextProvider';
@@ -11,9 +11,25 @@ import PostCard from './PostCard';
 const SingleTopicPage = () => {
   const [msg, setMsg] = useState('');
   const [posts, setPosts] = useState<PostDto[]>([]);
+  const [clickedUpVotePost, setClickedUpVotePost] = useState<number | null>(
+    null
+  );
 
   const { id } = useParams();
   const { authState } = useAuthContext();
+
+  const voteUrl = `${env.API_URL}/posts/${
+    clickedUpVotePost ?? -1
+  }/vote` as const;
+
+  const fetchConfig = { method: 'POST' } as const;
+  const {
+    data: responseVotedDto,
+    error: voteResponseError,
+    sendRequest: postVoteRequest,
+    nullResponseError: nullVoteResponseError,
+    statusCode: voteResStatusCode
+  } = useFetch<PostDto>(voteUrl, fetchConfig);
 
   const newPostPayload = {
     message: msg,
@@ -36,6 +52,17 @@ const SingleTopicPage = () => {
   }, [data]);
 
   useEffect(() => {
+    if (!responseVotedDto) return;
+
+    const updateNewPost = (prevPosts: PostDto[]) =>
+      prevPosts.map((oldPost) =>
+        oldPost.id === responseVotedDto.id ? responseVotedDto : oldPost
+      );
+
+    setPosts(updateNewPost);
+  }, [responseVotedDto]);
+
+  useEffect(() => {
     if (topicResponse) setPosts(topicResponse.posts);
   }, [topicResponse]);
 
@@ -44,6 +71,40 @@ const SingleTopicPage = () => {
 
     sendRequest();
   };
+
+  const sendVotePostRequest = useCallback((postId: number) => {
+    if (postId === null) return;
+
+    setClickedUpVotePost(postId);
+  }, []);
+
+  useEffect(() => {
+    if (clickedUpVotePost === null) {
+      return;
+    }
+    postVoteRequest();
+    setClickedUpVotePost(null);
+  }, [clickedUpVotePost, postVoteRequest, sendVotePostRequest]);
+
+  useEffect(() => {
+    if (!voteResponseError) {
+      return;
+    }
+    if (voteResStatusCode === 403 && !authState.isLogged) {
+      alert('You have to be logged in to vote posts');
+      return;
+    }
+    if (voteResStatusCode === 400) {
+      alert(voteResponseError);
+      return;
+    }
+    nullVoteResponseError();
+  }, [
+    voteResponseError,
+    nullVoteResponseError,
+    voteResStatusCode,
+    authState.isLogged
+  ]);
 
   // TODO: Handle no data situation
   if (!topicResponse) return <div>oh noes</div>;
@@ -59,20 +120,25 @@ const SingleTopicPage = () => {
             <h1 className="font-sans text-3xl font-bold bg-slate text-slate-200">
               {topicResponse?.header}
             </h1>
-            <PostCard
-              key={topicResponse.id}
-              createdTime={topicResponse.createdTime}
-              message={topicResponse.message}
-              user={topicResponse.creator}
-              votes={topicResponse.votes}
-            />
+            <div className="pb-5" id="topic-first-post-container">
+              <PostCard
+                votes={topicResponse.id}
+                key={topicResponse.id}
+                createdTime={topicResponse.createdTime}
+                message={topicResponse.message}
+                user={topicResponse.creator}
+                sendVotePostRequest={sendVotePostRequest}
+              />
+            </div>
             {posts.map(({ id, user, createdTime, message, votes }) => (
               <PostCard
                 key={id}
+                postId={id}
                 createdTime={createdTime}
                 message={message}
                 user={user}
                 votes={votes}
+                sendVotePostRequest={sendVotePostRequest}
               />
             ))}
             {authState.isLogged && (

@@ -42,7 +42,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [role, setRole] = useState<string | null>(null);
 
   const setNotLoggedState = () => {
-    setExp(0);
+    setLocalStorageToken(null);
+
+    setExp((_prevState) => 0);
     setRole(null);
     setUsername(null);
     setIsLogged(false);
@@ -50,8 +52,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const updateAuthState = (token: string | null) => {
     if (token === null) {
-      setNotLoggedState;
-      setLocalStorageToken(null);
+      setNotLoggedState();
       return;
     }
 
@@ -78,12 +79,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    const { exp } = decodeJwtClaims(token);
+    const { exp, role, sub } = decodeJwtClaims(token);
 
     if (isBefore(exp, new Date())) {
       setNotLoggedState();
-      return;
     }
+
+    setExp(exp);
+    setRole(role);
+    setUsername(sub);
+    setIsLogged(true);
   };
 
   return (

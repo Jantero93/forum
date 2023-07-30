@@ -5,7 +5,7 @@ const getEnv = (key: string) => {
     throw new Error(`Env variable ${key} not found`);
   }
 
-  return envVariable;
+  return envVariable as string;
 };
 
 export default {
