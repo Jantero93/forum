@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode';
 
-export type JwtClaims = {
+type JwtClaims = {
   sub: string;
   role: string;
   iat: number;

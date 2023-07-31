@@ -7,9 +7,6 @@ export const formatDate = (date: MomentDateTypes, format: string) => {
   return momentObj.format(format);
 };
 
-export const formatDateFromIsoString = (date: string, format: string) =>
-  moment(date, moment.ISO_8601).format(format);
-
 export const isBefore = (
   date: MomentDateTypes,
   dateToBeBefore: MomentDateTypes
