@@ -87,18 +87,19 @@ const SingleTopicPage = () => {
   }, [clickedUpVotePost, postVoteRequest, sendVotePostRequest]);
 
   useEffect(() => {
-    if (!voteResponseError) {
+    if (!voteResponseError || voteResponseError === '') {
       return;
     }
     if (voteResStatusCode === 403 && !authState.isLogged) {
       alert('You have to be logged in to vote posts');
+      nullVoteResponseError();
       return;
     }
-    if (voteResStatusCode === 400) {
-      alert(voteResponseError);
+    if (voteResStatusCode === 400 && authState.isLogged) {
+      alert('You have already voted this post');
+      nullVoteResponseError();
       return;
     }
-    nullVoteResponseError();
   }, [
     voteResponseError,
     nullVoteResponseError,
