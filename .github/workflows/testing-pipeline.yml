@@ -1,3 +1,4 @@
+
 name: Run all tests
 
 on:
@@ -26,7 +27,7 @@ jobs:
           java-version: "17"
           distribution: "temurin"
       - name: Run backend api & unit tests
-        run: mvn test --no-transfer-progress
+        run: mvn test -DargLine="-Dspring.profiles.active=test" --no-transfer-progress
         working-directory: ./backend-forum
 
       - name: Start checkout Cypress

@@ -29,7 +29,7 @@ public class ApplicationLoader implements ApplicationRunner {
         if (isDevOrProdProfile) {
             dataFakerService.generateDbInitializationData();
         } else {
-            log.info("No 'dev' profile, skipping data initialization");
+            log.info("No 'dev' or 'prod' profile, skipping data initialization");
         }
 
     }
