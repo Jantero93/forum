@@ -49,17 +49,13 @@ jobs:
       run:
         working-directory: ./web-app
 
-    strategy:
-      matrix:
-        node: [18]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ver 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
       - name: Install project
         run: npm ci
       - name: Run unit tests
