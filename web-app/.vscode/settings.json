@@ -5,5 +5,8 @@
   // Runs Prettier, then ESLint
   "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "cSpell.enableFiletypes": ["typescriptreact"]
+  "cSpell.enableFiletypes": ["typescriptreact"],
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  }
 }

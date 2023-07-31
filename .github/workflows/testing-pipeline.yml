@@ -44,6 +44,7 @@ jobs:
         run: docker-compose -f "docker-compose.yml" down
 
   Frontend-unit-tests:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -52,7 +53,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Use Node.js ver 18
+      - name: Use Node.js version 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
