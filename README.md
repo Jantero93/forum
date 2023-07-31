@@ -6,12 +6,13 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 
 **Features coming:**
 
-- Users can upvote posts
+- ~~Users can upvote posts~~ **Done**
+- ~~All tests run on pipeline~~ **Done**
 - Images can be attached to posts
 - Long term goal: Put this application running on AWS or Azure
 
 **On dev and prod environments automatically is generated admin user for testing purposes**
-**NOTE: Username: admin, password: root**
+Username: admin, password: root
 
 ---
 
@@ -32,15 +33,16 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 
 <h3>Others</h3>
 
-> - Docker (not needed for local developing, only used for creating prodcution application)
+> - Docker (not needed for local developing, only used for creating prodcution application and for testing on pipeline)
+> - GitHub Actions pipeline(s)
 
 ---
 
 <h3> Project includes</h3>
 
 > - Authentication (JWT token) + roles for users
-> - Frontend: Unit tests
-> - Backend: API tests
+> - Frontend: Unit, E2E tests
+> - Backend: API, unit tests
 > - Application is completely dockerized (production only)
 > - Security configuration on backend
 
@@ -71,7 +73,7 @@ Install packages
 Start frontend in development mode
 `npm run dev`
 
-Project should be started on port 3000
+Dev server should start on port 3000
 
 <h3>Backend (with Maven)</h3>
 <p>In backend-forum folder run command</p>
@@ -80,30 +82,37 @@ Install packages
 `mvn install -DskipTests=true`
 And run project on development mode
 `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
-Project should be started on port 8080
+Project should start on port 8080
 
 <h3>Postgres</h3>
 
-Create database called `java-forum` Hibernate will populate all needed database tables
+Create database called `java-forum` Hibernate will automatically populate all needed database tables
 
 ---
 
-<h2>Run tests</h2>
+<h2>Testing</h2>
 
-<h3>Frontend</h3>
+<p>All tests are run on pipeline (GitHub Actions) when pushing / making pull request on master branch</p>
+
+<h3>Run tests locally</h3>
+
+<h4>Frontend</h4>
 <p>In web-app folder run command</p>
 
 Install packages if not already installed
 `npm ci`
 
-Run tests with command
+Run unit tests with command
 `npm test`
 
-<h3>Backend</h3>
-<p>Start Spring Boot instance on port 8080. After that in backend-forum folder run commands. Api tests will be run against on instance on port 800</p>
+Run e2e tests with command `npm run test:e2e` Before that start dev server on port 3000
+(`npm run dev` or `npm run preview`)
+
+<h4>Backend</h4>
+<p>Start Spring Boot instance on port 8080.  Api tests will be run against on instance on port 8080. After that in backend-forum folder run commands.</p>
 
 Start Spring boot instance with command
 `mvn spring-boot:run -Dspring-boot.run.profiles=test`
 
-Run tests with command
+Run tests with command. This will run all api & unit tests
 `mvn test`
