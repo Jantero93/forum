@@ -1,10 +1,10 @@
-
 name: Run all tests
 
 on:
   push:
     branches:
       - master
+      - fix-pipeline
   pull_request:
     branches:
       - master
@@ -42,7 +42,7 @@ jobs:
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker-compose -f "docker-compose.yml" down -v
 
   Frontend-unit-tests:
     timeout-minutes: 10
