@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Start containers
-        run: docker-compose -f "docker-compose.yml" up -d --build
+        run: docker-compose -f "docker-compose.yml" --env-file .env.test up -d --build
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3

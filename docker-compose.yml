@@ -6,9 +6,9 @@ services:
     container_name: psql-db
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=java-forum
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
     networks:
@@ -17,14 +17,14 @@ services:
       - db-data:/var/lib/postgresql/data
 
   frontend:
-    image: web-app
-    container_name: frontend
+    image: web-app-${ENV}
+    container_name: frontend-${ENV}
     build:
       context: ./web-app
       dockerfile: Dockerfile
       args:
-        VITE_APP_API_URL: http://localhost:8080/api
-        VITE_NODE_ENV: prod
+        VITE_APP_API_URL: ${VITE_APP_API_URL}
+        VITE_NODE_ENV: ${VITE_NODE_ENV}
     ports:
       - 80:80
     depends_on:
@@ -33,16 +33,18 @@ services:
       - app-network
 
   backend:
-    container_name: backend
+    image: backend-${ENV}
+    container_name: backend-${ENV}
     build:
       context: ./backend-forum
       dockerfile: Dockerfile
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://psql-db:5432/java-forum
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - psql-db

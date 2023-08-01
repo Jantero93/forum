@@ -7,9 +7,12 @@ import com.example.fullstackforum.posts.PostRepository;
 import com.example.fullstackforum.security.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
 import com.example.fullstackforum.topic.TopicWithPostsDto;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -17,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
+@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TopicApiTests {
     @Autowired
@@ -39,6 +43,14 @@ class TopicApiTests {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Value("${spring.datasource.url}")
+    private String connectionString;
+
+    @BeforeEach
+    void beforeEach() {
+        log.debug("datasource url: {}", connectionString);
+    }
 
     @Test
     void getTopic_ShouldReturnOk() {

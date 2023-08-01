@@ -1,9 +1,6 @@
 package com.example.fullstackforum.auth;
 
-import com.example.fullstackforum.posts.PostRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +24,10 @@ public class AuthenticationController {
             var query = deleteCommand.replace("#TABLE#", name);
 
             try {
-            em.createNativeQuery(query).getResultStream();
+                em.createNativeQuery(query).getResultStream();
 
-            } catch (Exception e){}
+            } catch (Exception e) {
+            }
 
         });
 
