@@ -49,7 +49,7 @@ Username: admin, password: root
 <h2>How to run project with docker (production mode)</h2>
 In root folder run command
 
-`docker-compose up`
+`docker-compose -f "docker-compose.yml" --env-file .env.production up --build`
 
 **All needed configurations and env variables are in Git.**
 Application will be hosted on localhost port **80** (Nginx)
@@ -86,7 +86,7 @@ Project should start on port 8080
 
 <h3>Postgres</h3>
 
-Create database called `java-forum` Hibernate will automatically populate all needed database tables
+Create database called `java-forum` Hibernate will automatically populate all needed database tables. Testing needs database `java-forum-test`
 
 ---
 

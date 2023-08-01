@@ -98,7 +98,6 @@ const SingleTopicPage = () => {
     if (voteResStatusCode === 400 && authState.isLogged) {
       alert('You have already voted this post');
       nullVoteResponseError();
-      return;
     }
   }, [
     voteResponseError,

@@ -1,9 +1,12 @@
-version: "3.8"
+version: '3.8'
 
 services:
   psql-db:
-    image: postgres
+    image: postgres-${ENV}
     container_name: psql-db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -49,10 +52,11 @@ services:
     depends_on:
       - psql-db
     networks:
-    - app-network
+      - app-network
 
 networks:
- app-network:
+  app-network:
 
 volumes:
   db-data:
+    name: db-data-volume-${ENV}

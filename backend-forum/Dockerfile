@@ -1,9 +1,9 @@
-FROM maven:3.8.3 AS build
+FROM maven:3.9.1-eclipse-temurin-17-alpine AS build
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN mvn clean package -DskipTests --no-transfer-progress
 
-FROM openjdk:17
+FROM openjdk:17-alpine
 VOLUME /tmp
 EXPOSE 8080
 ARG JAR_FILE=fullstackforum-build.jar

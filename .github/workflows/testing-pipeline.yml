@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - fix-pipeline
   pull_request:
     branches:
       - master
@@ -30,7 +29,7 @@ jobs:
         run: mvn test -DargLine="-Dspring.profiles.active=test" --no-transfer-progress
         working-directory: ./backend-forum
 
-      - name: Start checkout Cypress
+      - name: Checkout Cypress
         uses: actions/checkout@v3
       - name: Cypress run e2e tests against docker container
         uses: cypress-io/github-action@v5
@@ -52,7 +51,7 @@ jobs:
         working-directory: ./web-app
 
     steps:
-      - name: Checkout
+      - name: Checkout Node
         uses: actions/checkout@v3
       - name: Use Node.js version 18
         uses: actions/setup-node@v3
