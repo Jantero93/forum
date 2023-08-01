@@ -1,9 +1,14 @@
 package com.example.fullstackforum.auth;
 
 import com.example.fullstackforum.posts.PostRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -12,19 +17,23 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    private final PostRepository postRepository;
+    private final EntityManager em;
 
     @GetMapping("a")
     public Object test() {
-        var post = postRepository.findById(5852);
-        if (post.isPresent()) {
-            var db = post.get();
-            return db.getVotes();
-        }
+        var deleteCommand = "DELETE FROM #TABLE#";
+        var tableNames = List.of("tokens", "posts", "topics", "users_", "boards");
+        tableNames.forEach(name -> {
+            var query = deleteCommand.replace("#TABLE#", name);
 
-        return 123;
+            try {
+            em.createNativeQuery(query).getResultStream();
 
+            } catch (Exception e){}
 
+        });
+
+        return null;
     }
 
     @PostMapping("register")
