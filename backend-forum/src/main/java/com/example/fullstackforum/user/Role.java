@@ -1,4 +1,4 @@
-package com.example.fullstackforum.security.user;
+package com.example.fullstackforum.user;
 
 
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.example.fullstackforum.security.user.Permission.*;
+import static com.example.fullstackforum.user.Permission.*;
 
 
 @RequiredArgsConstructor

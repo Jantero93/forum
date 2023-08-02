@@ -2,7 +2,7 @@ package com.example.fullstackforum.topic;
 
 import com.example.fullstackforum.board.Board;
 import com.example.fullstackforum.posts.Post;
-import com.example.fullstackforum.security.user.User;
+import com.example.fullstackforum.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

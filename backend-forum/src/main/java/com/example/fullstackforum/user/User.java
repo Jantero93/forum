@@ -1,4 +1,4 @@
-package com.example.fullstackforum.security.user;
+package com.example.fullstackforum.user;
 
 import com.example.fullstackforum.posts.Post;
 import com.example.fullstackforum.security.token.Token;

@@ -4,7 +4,7 @@ import com.example.fullstackforum.board.BoardRepository;
 import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.db.DataFakerService;
 import com.example.fullstackforum.posts.PostRepository;
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
 import com.example.fullstackforum.topic.TopicWithPostsDto;
 import lombok.extern.slf4j.Slf4j;

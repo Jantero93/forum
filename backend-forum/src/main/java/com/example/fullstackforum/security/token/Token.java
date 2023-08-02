@@ -1,6 +1,6 @@
 package com.example.fullstackforum.security.token;
 
-import com.example.fullstackforum.security.user.User;
+import com.example.fullstackforum.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

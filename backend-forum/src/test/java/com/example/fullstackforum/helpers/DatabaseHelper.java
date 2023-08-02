@@ -3,7 +3,7 @@ package com.example.fullstackforum.helpers;
 import com.example.fullstackforum.board.BoardRepository;
 import com.example.fullstackforum.posts.PostRepository;
 import com.example.fullstackforum.security.token.TokenRepository;
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

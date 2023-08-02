@@ -2,7 +2,7 @@ package com.example.fullstackforum.helpers;
 
 import com.example.fullstackforum.auth.AuthenticationService;
 import com.example.fullstackforum.auth.RegisterRequest;
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.user.UserRepository;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

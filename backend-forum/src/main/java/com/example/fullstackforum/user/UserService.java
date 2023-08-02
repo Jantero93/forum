@@ -1,4 +1,4 @@
-package com.example.fullstackforum.security.user;
+package com.example.fullstackforum.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

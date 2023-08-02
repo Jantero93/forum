@@ -1,6 +1,6 @@
 package com.example.fullstackforum.posts;
 
-import com.example.fullstackforum.security.user.User;
+import com.example.fullstackforum.user.User;
 import com.example.fullstackforum.topic.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

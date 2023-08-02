@@ -1,4 +1,4 @@
-package com.example.fullstackforum.security.user;
+package com.example.fullstackforum.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

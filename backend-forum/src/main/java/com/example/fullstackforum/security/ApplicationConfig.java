@@ -1,6 +1,6 @@
 package com.example.fullstackforum.security;
 
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

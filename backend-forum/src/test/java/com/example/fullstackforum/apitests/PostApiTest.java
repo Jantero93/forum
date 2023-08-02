@@ -8,7 +8,7 @@ import com.example.fullstackforum.helpers.UserLoggedService;
 import com.example.fullstackforum.posts.NewPostRequest;
 import com.example.fullstackforum.posts.PostDto;
 import com.example.fullstackforum.posts.PostRepository;
-import com.example.fullstackforum.security.user.UserRepository;
+import com.example.fullstackforum.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

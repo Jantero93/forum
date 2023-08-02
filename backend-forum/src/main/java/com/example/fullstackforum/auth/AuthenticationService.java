@@ -1,9 +1,9 @@
 package com.example.fullstackforum.auth;
 
 import com.example.fullstackforum.security.JwtService;
-import com.example.fullstackforum.security.user.Role;
-import com.example.fullstackforum.security.user.User;
-import com.example.fullstackforum.security.user.UserService;
+import com.example.fullstackforum.user.Role;
+import com.example.fullstackforum.user.User;
+import com.example.fullstackforum.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

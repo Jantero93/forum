@@ -1,6 +1,6 @@
 package com.example.fullstackforum.security;
 
-import com.example.fullstackforum.security.user.User;
+import com.example.fullstackforum.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
