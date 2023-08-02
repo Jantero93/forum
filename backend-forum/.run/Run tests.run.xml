@@ -44,7 +44,7 @@
           <option name="goals">
             <list>
               <option value="test" />
-              <option value="-Dspring.profiles.active=test" />
+              <option value="-DargLine=-Dspring.profiles.active=test" />
             </list>
           </option>
           <option name="pomFileName" />
