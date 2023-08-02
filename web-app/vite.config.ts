@@ -16,6 +16,22 @@ const config: ViteConfig = {
   },
   preview: {
     port: 3000
+  },
+  build: {
+    rollupOptions: {
+      onwarn: (warning, warn) => {
+        // Safe to ignore warning https://github.com/TanStack/query/issues/5175
+        const safeToIgnoreWarning =
+          warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
+          warning.message.includes('use client');
+
+        if (safeToIgnoreWarning) {
+          return;
+        }
+
+        warn(warning);
+      }
+    }
   }
 };
 

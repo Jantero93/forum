@@ -10,6 +10,7 @@ const App = () => {
   const location = useLocation();
   const { checkTokenExpiration } = useAuthContext();
 
+  // Check token expiration on page change
   useEffect(() => {
     checkTokenExpiration();
   }, [location, checkTokenExpiration]);
