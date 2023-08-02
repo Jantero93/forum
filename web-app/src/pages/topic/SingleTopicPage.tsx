@@ -7,6 +7,7 @@ import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
 import NewPostForm from '../../components/NewPostForm';
 import PostCard from './PostCard';
+import { toast as sendToast } from 'react-toastify';
 
 const SingleTopicPage = () => {
   const [msg, setMsg] = useState('');
@@ -78,6 +79,7 @@ const SingleTopicPage = () => {
     setClickedUpVotePost(postId);
   }, []);
 
+  // Clicked up vote for post
   useEffect(() => {
     if (clickedUpVotePost === null) {
       return;
@@ -86,17 +88,22 @@ const SingleTopicPage = () => {
     setClickedUpVotePost(null);
   }, [clickedUpVotePost, postVoteRequest, sendVotePostRequest]);
 
+  // Vote error response from api
   useEffect(() => {
     if (!voteResponseError || voteResponseError === '') {
       return;
     }
+
+    // Trying vote without authentication
     if (voteResStatusCode === 403 && !authState.isLogged) {
-      alert('You have to be logged in to vote posts');
+      sendToast.error('You have to be logged in to vote posts');
       nullVoteResponseError();
       return;
     }
+
+    // Voted alreadu
     if (voteResStatusCode === 400 && authState.isLogged) {
-      alert('You have already voted this post');
+      sendToast.error('You have already voted this post');
       nullVoteResponseError();
     }
   }, [

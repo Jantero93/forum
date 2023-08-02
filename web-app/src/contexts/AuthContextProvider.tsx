@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocalStorage } from '~/hooks/useLocalStorage';
 import { isBefore } from '~/util/dateHelpers';
 import { decodeJwtClaims } from '~/util/jwt';
@@ -41,39 +41,45 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLogged, setIsLogged] = useState(false);
   const [role, setRole] = useState<string | null>(null);
 
-  const setNotLoggedState = () => {
+  const setNotLoggedState = useCallback(() => {
     setLocalStorageToken(null);
 
     setExp((_prevState) => 0);
     setRole(null);
     setUsername(null);
     setIsLogged(false);
-  };
+  }, [setLocalStorageToken]);
 
-  const updateAuthState = (token: string | null) => {
-    if (token === null) {
-      setNotLoggedState();
-      return;
-    }
+  const updateAuthState = useCallback(
+    (token: string | null) => {
+      if (token === null) {
+        setNotLoggedState();
+        return;
+      }
 
-    setLocalStorageToken(token);
+      setLocalStorageToken(token);
 
-    const { exp, role, sub } = decodeJwtClaims(token);
-    setExp(exp);
-    setRole(role);
-    setUsername(sub);
-    setIsLogged(true);
-  };
+      const { exp, role, sub } = decodeJwtClaims(token);
+      setExp(exp);
+      setRole(role);
+      setUsername(sub);
+      setIsLogged(true);
+    },
+    [setLocalStorageToken, setNotLoggedState]
+  );
 
-  const authState: AuthContextType = {
-    exp,
-    role,
-    token,
-    username,
-    isLogged
-  };
+  const authState = useMemo(
+    () => ({
+      exp,
+      role,
+      token,
+      username,
+      isLogged
+    }),
+    [exp, isLogged, role, token, username]
+  );
 
-  const checkTokenExpiration = () => {
+  const checkTokenExpiration = useCallback(() => {
     if (token === null) {
       setNotLoggedState();
       return;
@@ -89,12 +95,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setRole(role);
     setUsername(sub);
     setIsLogged(true);
-  };
+  }, [setNotLoggedState, token]);
+
+  const contextState = useMemo(
+    () => ({
+      authState,
+      updateAuthState,
+      checkTokenExpiration
+    }),
+    [authState, checkTokenExpiration, updateAuthState]
+  );
 
   return (
-    <AuthUpdateContext.Provider
-      value={{ authState, updateAuthState, checkTokenExpiration }}
-    >
+    <AuthUpdateContext.Provider value={contextState}>
       {children}
     </AuthUpdateContext.Provider>
   );

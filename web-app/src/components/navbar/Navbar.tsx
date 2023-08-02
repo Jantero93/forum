@@ -9,6 +9,7 @@ import SignUpModal from '../SignUpModal';
 import { useFetch } from '~/hooks/useFetch';
 import ErrorPage from '~/pages/ErrorPage';
 import { useAuthContext } from '~/contexts/AuthContextProvider';
+import { toast as sendToast } from 'react-toastify';
 
 type LoginResponse = { token: string };
 type RegisterResponse = { token: string };
@@ -45,17 +46,19 @@ const Navbar = () => {
   );
 
   useEffect(() => {
-    if (loginResponse?.token && !logOutClicked) {
+    if (loginResponse?.token && !logOutClicked && !authState.isLogged) {
       updateAuthState(loginResponse.token);
     }
-  }, [loginResponse, logOutClicked, updateAuthState]);
+  }, [loginResponse, logOutClicked, updateAuthState, authState.isLogged]);
 
+  // Send register request and receive response
   useEffect(() => {
-    if (registerResponse?.token && !logOutClicked) {
+    if (registerResponse?.token && !logOutClicked && !authState.isLogged) {
       updateAuthState(registerResponse.token);
+      sendToast.success('Registered successfully');
       setShowSignIn(false);
     }
-  }, [registerResponse, logOutClicked, updateAuthState]);
+  }, [registerResponse, logOutClicked, updateAuthState, authState.isLogged]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 
@@ -83,7 +86,7 @@ const Navbar = () => {
     setPassword('');
   };
 
-  const formOrLoggedInComponent = (): JSX.Element => {
+  const formOrLoggedInComponent = (): React.JSX.Element => {
     if (showSignIn)
       return (
         <SignUpModal
