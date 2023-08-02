@@ -106,7 +106,7 @@ Run unit tests with command
 `npm test`
 
 Run e2e tests with command `npm run test:e2e` Before that start dev server on port 3000
-(`npm run dev` or `npm run preview`)
+`npm run dev` or `npm run preview`
 
 <h4>Backend</h4>
 <p>Start Spring Boot instance on port 8080.  Api tests will be run against on instance on port 8080. After that in backend-forum folder run commands.</p>
