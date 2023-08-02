@@ -2,6 +2,7 @@ package com.example.fullstackforum.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class ExceptionHandlerController {
     }
 }
 
+@Data
 @AllArgsConstructor
 class ExceptionResponse {
         private String message;
