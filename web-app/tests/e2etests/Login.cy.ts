@@ -5,8 +5,6 @@ context('Actions', () => {
     cy.visit('/');
   });
 
-  // https://on.cypress.io/interacting-with-elements
-
   it('Write admin to Email input', () => {
     const username = 'admin';
     cy.get('input[name="Email"]')
@@ -25,5 +23,5 @@ context('Actions', () => {
   });
 });
 
-// Empty export because build success
+// Empty export sp that build will success
 export {};
