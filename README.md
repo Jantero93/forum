@@ -115,4 +115,4 @@ Start Spring boot instance with command
 `mvn spring-boot:run -Dspring-boot.run.profiles=test`
 
 Run tests with command. This will run all api & unit tests
-`mvn test`
+`mvn test -DargLine="-Dspring.profiles.active=test"`
