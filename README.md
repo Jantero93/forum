@@ -8,11 +8,24 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 
 - ~~Users can upvote posts~~ **Done**
 - ~~All tests run on pipeline~~ **Done**
+- Users can edit posts in one hour from creation
 - Images can be attached to posts
 - Long term goal: Put this application running on AWS or Azure
 
 **On dev and prod environments automatically is generated admin user for testing purposes**
 Username: admin, password: root
+
+---
+
+<h2>Features</h2>
+
+- Individual users with roles
+- Admin can delete any posts
+- Boards are predefined at the moment
+- Users can delete only own posts
+- Users can create topics
+- Users can upvote posts (one upvote per post)
+- Secure authentication with JSON Web Token
 
 ---
 
@@ -31,20 +44,19 @@ Username: admin, password: root
 > - Hibernate (PostgreSQL; using 15.1, other versions should be fine)
 > - Controller-Service-Repository -pattern
 
+<h3>Testing</h3>
+
+> - Frontend unit tests: Jest
+> - Frontend E2E tests: Cypress
+> - Backend unit tests JUnit 5
+> - Backend API tests: Spring Boot RestTemplate
+
 <h3>Others</h3>
 
 > - Docker (not needed for local developing, only used for creating prodcution application and for testing on pipeline)
-> - GitHub Actions pipeline(s)
+> - GitHub Actions pipeline
 
 ---
-
-<h3> Project includes</h3>
-
-> - Authentication (JWT token) + roles for users
-> - Frontend: Unit, E2E tests
-> - Backend: API, unit tests
-> - Application is completely dockerized (production only)
-> - Security configuration on backend
 
 <h2>How to run project with docker (production mode)</h2>
 In root folder run command
@@ -64,29 +76,34 @@ Application will be hosted on localhost port **80** (Nginx)
 
 <h3>Frontend</h3>
 
+In folder `web-app`
+
 Install packages
 `npm install`
 
-(or if you want exactly like package-lock.json, then)
+Or if you want exactly like package-lock.json, then
 `npm ci`
 
 Start frontend in development mode
 `npm run dev`
 
-Dev server should start on port 3000
+Dev server starts on port 3000
 
 <h3>Backend (with Maven)</h3>
-<p>In backend-forum folder run command</p>
+
+In `backend-forum` folder run command next commands
 
 Install packages
 `mvn install -DskipTests=true`
+
 And run project on development mode
 `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
-Project should start on port 8080
+
+Project starts on port 8080
 
 <h3>Postgres</h3>
 
-Create database called `java-forum` Hibernate will automatically populate all needed database tables. Testing needs database `java-forum-test`
+Create database called `java-forum` Hibernate will automatically populate all needed database tables. Testing environment needs database `java-forum-test`
 
 ---
 
@@ -97,9 +114,9 @@ Create database called `java-forum` Hibernate will automatically populate all ne
 <h3>Run tests locally</h3>
 
 <h4>Frontend</h4>
-<p>In web-app folder run command</p>
 
-Install packages if not already installed
+Install packages if not already installed. In `web-app` folder run command
+
 `npm ci`
 
 Run unit tests with command
@@ -109,10 +126,13 @@ Run e2e tests with command `npm run test:e2e` Before that start dev server on po
 `npm run dev` or `npm run preview`
 
 <h4>Backend</h4>
-<p>Start Spring Boot instance on port 8080.  Api tests will be run against on instance on port 8080. After that in backend-forum folder run commands.</p>
 
-Start Spring boot instance with command
+In folder `backend-forum` start Spring Boot instance on port 8080 (default). Api tests will be run against on this instance.
+
 `mvn spring-boot:run -Dspring-boot.run.profiles=test`
 
-Run tests with command. This will run all api & unit tests
+After that run command
+
 `mvn test -DargLine="-Dspring.profiles.active=test"`
+
+Command runs all unit & api tests in test env
