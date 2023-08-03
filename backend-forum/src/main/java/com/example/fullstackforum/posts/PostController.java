@@ -19,5 +19,10 @@ public class PostController {
     public PostDto addVoteToPost(@PathVariable Integer id) {
         return postService.addVoteForPost(id);
     }
+
+    @DeleteMapping("posts/{id}")
+    public DeletePostResponse deletePost(@PathVariable Integer id) {
+        return postService.deletePost(id);
+    }
 }
 

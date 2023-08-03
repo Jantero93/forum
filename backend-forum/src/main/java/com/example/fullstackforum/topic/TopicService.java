@@ -30,6 +30,12 @@ public class TopicService {
 
         var topic = topicDb.get();
 
+        log.info("Filtering deleted posts");
+        var onlyNotDeletedPosts = topic.getPosts().stream()
+                .filter(post -> !post.isDeleted())
+                .toList();
+
+        topic.setPosts(onlyNotDeletedPosts);
         return topicMapper.mapTopicToTopicWithPostsDto(topic);
     }
 

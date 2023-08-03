@@ -11,6 +11,7 @@ type PostCardProps = {
   votes: number;
   postsUserId?: number;
   sendVotePostRequest: (postId: number) => void;
+  sendDeletePostRequest: (postId: number) => void;
 };
 
 const voteIconColor = '#48A047';
@@ -23,7 +24,8 @@ const PostCard = ({
   createdTime,
   votes,
   postsUserId,
-  sendVotePostRequest
+  sendVotePostRequest,
+  sendDeletePostRequest
 }: PostCardProps) => {
   const bgColorOfTopicsFirstPost =
     postId === undefined ? 'bg-slate-900' : 'bg-slate-700';
@@ -68,6 +70,7 @@ const PostCard = ({
                   alignmentBaseline="baseline"
                   cursor="pointer"
                   color={deleteIconColor}
+                  onClick={() => sendDeletePostRequest(postId)}
                 />
               </span>
             )}

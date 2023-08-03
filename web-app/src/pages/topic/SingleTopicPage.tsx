@@ -9,10 +9,15 @@ import NewPostForm from '../../components/NewPostForm';
 import PostCard from './PostCard';
 import { toast as sendToast } from 'react-toastify';
 
+type DeleteResponse = { message: string; postId: number };
+
 const SingleTopicPage = () => {
   const [msg, setMsg] = useState('');
   const [posts, setPosts] = useState<PostDto[]>([]);
   const [clickedUpVotePost, setClickedUpVotePost] = useState<number | null>(
+    null
+  );
+  const [clickedDeletePost, setClickedDeletePost] = useState<number | null>(
     null
   );
 
@@ -46,6 +51,14 @@ const SingleTopicPage = () => {
     `${env.API_URL}/topics/${topicIdFromUrl}`
   );
 
+  const { data: deleteResponse, sendRequest: deletePostRequest } =
+    useFetch<DeleteResponse>(
+      `${env.API_URL}/posts/${clickedDeletePost ?? -1}`,
+      {
+        method: 'DELETE'
+      }
+    );
+
   // Update components posts if creating new post is successful
   useEffect(() => {
     if (data) {
@@ -55,7 +68,9 @@ const SingleTopicPage = () => {
 
   // Update voted post count if voting post reqeust is successful
   useEffect(() => {
-    if (!responseVotedDto) return;
+    if (!responseVotedDto) {
+      return;
+    }
 
     const updateNewPost = (prevPosts: PostDto[]) =>
       prevPosts.map((oldPost) =>
@@ -64,6 +79,22 @@ const SingleTopicPage = () => {
 
     setPosts(updateNewPost);
   }, [responseVotedDto]);
+
+  // Update posts if delete post is successful
+  useEffect(() => {
+    if (!deleteResponse) {
+      return;
+    }
+
+    const { postId: deletedPostId } = deleteResponse;
+
+    const updateNewPosts = (prevPosts: PostDto[]) =>
+      prevPosts.filter((post) => post.id !== deletedPostId);
+
+    setPosts(updateNewPosts);
+    setClickedDeletePost(null);
+    sendToast.success('Successfully deleted post');
+  }, [deleteResponse]);
 
   // Render new posts if topic changes
   useEffect(() => {
@@ -82,14 +113,32 @@ const SingleTopicPage = () => {
     setClickedUpVotePost(postId);
   }, []);
 
+  // Update posts after deleting
+  const sendDeletePostRequest = (postId: number) => {
+    if (postId === null) return;
+
+    setClickedDeletePost(postId);
+  };
+
   // Clicked up vote for post
   useEffect(() => {
     if (clickedUpVotePost === null) {
       return;
     }
+
     postVoteRequest();
     setClickedUpVotePost(null);
   }, [clickedUpVotePost, postVoteRequest, sendVotePostRequest]);
+
+  // Clicked delete post
+  useEffect(() => {
+    if (clickedDeletePost === null) {
+      return;
+    }
+
+    deletePostRequest();
+    setClickedDeletePost(null);
+  }, [clickedDeletePost, deletePostRequest]);
 
   // Vote error response from api
   useEffect(() => {
@@ -138,6 +187,7 @@ const SingleTopicPage = () => {
                 message={topicResponse.message}
                 user={topicResponse.creator}
                 sendVotePostRequest={sendVotePostRequest}
+                sendDeletePostRequest={sendDeletePostRequest}
               />
             </div>
             {posts.map(({ id, user, createdTime, message, votes, userId }) => (
@@ -149,6 +199,7 @@ const SingleTopicPage = () => {
                 user={user}
                 votes={votes}
                 sendVotePostRequest={sendVotePostRequest}
+                sendDeletePostRequest={sendDeletePostRequest}
                 postsUserId={userId}
               />
             ))}
