@@ -4,12 +4,14 @@ package com.example.fullstackforum.apitests;
 import com.example.fullstackforum.board.BoardRepository;
 import com.example.fullstackforum.config.TestConfig;
 import com.example.fullstackforum.db.DataFakerService;
-import com.example.fullstackforum.helpers.UserLoggedService;
+import com.example.fullstackforum.helpers.TestHelpers;
+import com.example.fullstackforum.posts.DeletePostResponse;
 import com.example.fullstackforum.posts.NewPostRequest;
 import com.example.fullstackforum.posts.PostDto;
 import com.example.fullstackforum.posts.PostRepository;
-import com.example.fullstackforum.user.UserRepository;
 import com.example.fullstackforum.topic.TopicRepository;
+import com.example.fullstackforum.user.Role;
+import com.example.fullstackforum.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,27 +47,25 @@ class PostApiTest {
     private DataFakerService dataFakerService;
 
     @Autowired
-    private UserLoggedService userLoggedService;
+    private BoardRepository boardRepository;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private TestHelpers testHelpers;
 
     @Test
     void savePostToTopic_ShouldReturnOk() {
-        final String username = "test.com";
-        final String password = "123";
-        var token = userLoggedService.createAndLogInTestUser(username, password);
-
-        var userDb = userRepository.findByEmail(username);
-        Assertions.assertTrue(userDb.isPresent());
+        var mockUpUser = dataFakerService.generateMockupUser();
+        var dbUser = userRepository.save(mockUpUser);
 
         var mockUpTopic = dataFakerService.generateMockupTopic();
-        mockUpTopic.setUser(userDb.get());
+        mockUpTopic.setUser(dbUser);
         var topicDb = topicRepository.save(mockUpTopic);
+
+        var userToken = testHelpers.getTokenForUser(dbUser);
 
         // Set Bearer token
         var headers = new HttpHeaders();
-        headers.setBearerAuth(token);
+        headers.setBearerAuth(userToken);
 
         var testMsg = "Test post message";
         HttpEntity<NewPostRequest> reqEntity = new HttpEntity<>(
@@ -86,34 +86,31 @@ class PostApiTest {
         Assertions.assertTrue(body.id() >= 0);
         Assertions.assertEquals(body.message(), testMsg);
         Assertions.assertNotNull(body.id());
-        Assertions.assertEquals(body.user(), username);
+        Assertions.assertEquals(body.user(), dbUser.getEmail());
         Assertions.assertEquals(body.votes(), 0);
         Assertions.assertTrue(body.createdTime().before(new Date()));
-        Assertions.assertEquals(body.userId(), userDb.get().getId());
+        Assertions.assertEquals(body.userId(), dbUser.getId());
 
         // Delete mock up date
         postRepository.deleteById(body.id());
         topicRepository.deleteById(topicDb.getId());
-        userLoggedService.deleteTestUser(username);
+        userRepository.delete(dbUser);
     }
 
     @Test
     void addVoteForPost_ShouldReturnOk() {
-        // Set up
-        final String username = "test.com";
-        final String password = "123";
-        var token = userLoggedService.createAndLogInTestUser(username, password);
-
-        var userDb = userRepository.findByEmail(username);
-        Assertions.assertTrue(userDb.isPresent());
+        var mockUpUser = dataFakerService.generateMockupUser();
+        var dbUser = userRepository.save(mockUpUser);
 
         var mockUpTopic = dataFakerService.generateMockupTopic();
-        mockUpTopic.setUser(userDb.get());
+        mockUpTopic.setUser(dbUser);
         var topicDb = topicRepository.save(mockUpTopic);
 
         // Set Bearer token
+        var userToken = testHelpers.getTokenForUser(dbUser);
+
         var headers = new HttpHeaders();
-        headers.setBearerAuth(token);
+        headers.setBearerAuth(userToken);
 
         var testMsg = "Test post message";
         HttpEntity<NewPostRequest> reqEntity = new HttpEntity<>(
@@ -133,7 +130,7 @@ class PostApiTest {
         Assertions.assertNotNull(newPostBody);
         Assertions.assertTrue(newPostBody.id() >= 0);
         Assertions.assertEquals(testMsg, newPostBody.message());
-        Assertions.assertEquals(username, newPostBody.user());
+        Assertions.assertEquals(dbUser.getEmail(), newPostBody.user());
         Assertions.assertEquals(0, newPostBody.votes());
         Assertions.assertTrue(newPostBody.createdTime().before(new Date()));
 
@@ -164,7 +161,7 @@ class PostApiTest {
         // Delete mock up date
         postRepository.deleteById(newPostBody.id());
         topicRepository.deleteById(topicDb.getId());
-        userLoggedService.deleteTestUser(username);
+        userRepository.deleteById(dbUser.getId());
     }
 
     @Test
@@ -188,6 +185,115 @@ class PostApiTest {
         }
 
         topicRepository.delete(topicDb);
+        userRepository.delete(dbUser);
+    }
+
+    @Test
+    void deletePostWithAdmin_ReturnOk() {
+        // Mock up data
+        var mockUpAdmin = dataFakerService.generateMockupUser();
+        mockUpAdmin.setRole(Role.ADMIN);
+        var dbAdmin = userRepository.save(mockUpAdmin);
+
+        var mockUpUser = dataFakerService.generateMockupUser();
+        var dbUser = userRepository.save(mockUpUser);
+
+        var mockUpTopic = dataFakerService.generateMockupTopic();
+        mockUpTopic.setUser(dbUser);
+        var dbTopic = topicRepository.save(mockUpTopic);
+
+        var mockUpPost = dataFakerService.generateMockupPost();
+        mockUpPost.setUser(dbUser);
+        var dbPost = postRepository.save(mockUpPost);
+
+        // Token
+        var adminToken = testHelpers.getTokenForUser(dbAdmin);
+
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+
+        HttpEntity<NewPostRequest> reqEntity = new HttpEntity<>(
+                null, headers
+        );
+
+        var requestUrl = testConfig.getApiUrl() + "posts/" + dbPost.getId();
+
+        // Action
+        var res = restTemplate.exchange(
+                requestUrl,
+                HttpMethod.DELETE,
+                reqEntity,
+                DeletePostResponse.class
+        );
+
+        var body = res.getBody();
+
+        var updatedPost = postRepository.findById(dbPost.getId());
+
+        // Validation
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertNotNull(body);
+        Assertions.assertEquals(dbPost.getId(), body.getPostId());
+        Assertions.assertEquals("Successfully deleted post", body.getMessage());
+
+        Assertions.assertTrue(updatedPost.isPresent());
+        Assertions.assertTrue(updatedPost.get().isDeleted());
+
+        postRepository.delete(dbPost);
+        topicRepository.delete(dbTopic);
+        userRepository.delete(dbUser);
+        userRepository.delete(dbAdmin);
+    }
+
+    @Test
+    void normalUserDeleteOwnPost_ShouldReturnOk() {
+        // Mock up data
+        var mockUpUser = dataFakerService.generateMockupUser();
+        var dbUser = userRepository.save(mockUpUser);
+
+        var mockUpTopic = dataFakerService.generateMockupTopic();
+        mockUpTopic.setUser(dbUser);
+        var dbTopic = topicRepository.save(mockUpTopic);
+
+        var mockUpPost = dataFakerService.generateMockupPost();
+        mockUpPost.setUser(dbUser);
+        var dbPost = postRepository.save(mockUpPost);
+
+        // Token
+        var userToken = testHelpers.getTokenForUser(dbUser);
+
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(userToken);
+
+        HttpEntity<NewPostRequest> reqEntity = new HttpEntity<>(
+                null, headers
+        );
+
+        var requestUrl = testConfig.getApiUrl() + "posts/" + dbPost.getId();
+
+        // Action
+        var res = restTemplate.exchange(
+                requestUrl,
+                HttpMethod.DELETE,
+                reqEntity,
+                DeletePostResponse.class
+        );
+
+        var body = res.getBody();
+
+        var updatedPost = postRepository.findById(dbPost.getId());
+
+        // Validation
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertNotNull(body);
+        Assertions.assertEquals(dbPost.getId(), body.getPostId());
+        Assertions.assertEquals("Successfully deleted post", body.getMessage());
+
+        Assertions.assertTrue(updatedPost.isPresent());
+        Assertions.assertTrue(updatedPost.get().isDeleted());
+
+        postRepository.delete(dbPost);
+        topicRepository.delete(dbTopic);
         userRepository.delete(dbUser);
     }
 

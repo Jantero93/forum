@@ -24,9 +24,7 @@ const SingleTopicPage = () => {
   const { id: topicIdFromUrl } = useParams();
   const { authState } = useAuthContext();
 
-  const voteUrl = `${env.API_URL}/posts/${
-    clickedUpVotePost ?? -1
-  }/vote` as const;
+  const voteUrl = `${env.API_URL}/posts/${clickedUpVotePost}/vote` as const;
 
   const fetchConfig = { method: 'POST' } as const;
   const {
@@ -52,12 +50,9 @@ const SingleTopicPage = () => {
   );
 
   const { data: deleteResponse, sendRequest: deletePostRequest } =
-    useFetch<DeleteResponse>(
-      `${env.API_URL}/posts/${clickedDeletePost ?? -1}`,
-      {
-        method: 'DELETE'
-      }
-    );
+    useFetch<DeleteResponse>(`${env.API_URL}/posts/${clickedDeletePost}`, {
+      method: 'DELETE'
+    });
 
   // Update components posts if creating new post is successful
   useEffect(() => {
