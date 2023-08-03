@@ -27,6 +27,11 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         log.info("Registering request: " + request);
 
+        if(!isRequestParametersValid(request)) {
+            log.warn("Invalid request parameters");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty username or password");
+        }
+
         var userDb = userService.getUserByEmail(request.getEmail());
 
         if (userDb != null) {
@@ -99,5 +104,11 @@ public class AuthenticationService {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user found");
         }
+    }
+
+    private boolean isRequestParametersValid(RegisterRequest request) {
+        var isNameEmpty = request.getEmail().isBlank() || request.getEmail().isEmpty();
+        var isPasswordEmpty = request.getPassword().isBlank() || request.getPassword().isEmpty();
+        return !isNameEmpty && !isPasswordEmpty;
     }
 }

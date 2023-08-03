@@ -20,52 +20,90 @@ const Navbar = () => {
   const [logOutClicked, setLogOutClicked] = useState(false);
   const [password, setPassword] = useState('');
 
-  const { authState } = useAuthContext();
+  const { authState, updateAuthState } = useAuthContext();
   const { isLogged } = authState;
-  const { updateAuthState } = useAuthContext();
 
   const loginUrl = `${env.API_URL}/auth/authenticate`;
-  const payload = { email, password };
+  const payload = { email, password } as const;
 
-  const { data: loginResponse, sendRequest } = useFetch<LoginResponse>(
-    loginUrl,
-    {
-      method: 'POST',
-      payload
-    }
-  );
+  const {
+    data: loginResponse,
+    sendRequest: sendLoginRequest,
+    nullApiResponse: nullLoginResponse,
+    error: loginError,
+    nullResponseError: nullLoginError
+  } = useFetch<LoginResponse>(loginUrl, {
+    method: 'POST',
+    payload
+  });
 
-  const { data: registerResponse, sendRequest: sendRegisterReqeust } =
-    useFetch<RegisterResponse>(`${env.API_URL}/auth/register`, {
-      method: 'POST',
-      payload: { email: password, password } as const
-    });
+  const {
+    data: registerResponse,
+    sendRequest: sendRegisterReqeust,
+    nullApiResponse: nullRegisterResponse,
+    error: registerError,
+    nullResponseError: nullRegisterError
+  } = useFetch<RegisterResponse>(`${env.API_URL}/auth/register`, {
+    method: 'POST',
+    payload
+  });
 
   const { data: boardResponse, error } = useFetch<BoardDto[]>(
     `${env.API_URL}/boards`
   );
 
+  // Send login request and receive response
   useEffect(() => {
     if (loginResponse?.token && !logOutClicked && !authState.isLogged) {
       updateAuthState(loginResponse.token);
+      nullLoginResponse();
     }
-  }, [loginResponse, logOutClicked, updateAuthState, authState.isLogged]);
+  }, [
+    loginResponse,
+    logOutClicked,
+    updateAuthState,
+    authState.isLogged,
+    nullLoginResponse
+  ]);
 
   // Send register request and receive response
   useEffect(() => {
     if (registerResponse?.token && !logOutClicked && !authState.isLogged) {
       updateAuthState(registerResponse.token);
       sendToast.success('Registered successfully');
+      nullRegisterResponse();
       setShowSignIn(false);
     }
-  }, [registerResponse, logOutClicked, updateAuthState, authState.isLogged]);
+  }, [
+    registerResponse,
+    logOutClicked,
+    updateAuthState,
+    authState.isLogged,
+    nullRegisterResponse
+  ]);
+
+  // Login error handling
+  useEffect(() => {
+    if (loginError) {
+      sendToast.error(loginError);
+      nullLoginError();
+    }
+  }, [loginError, nullLoginError]);
+
+  // Register error handling
+  useEffect(() => {
+    if (registerError) {
+      sendToast.error(registerError);
+      nullRegisterError();
+    }
+  }, [registerError, nullRegisterError]);
 
   const handleSignInModalClick = () => setShowSignIn(true);
 
   const handleLogInClick = (e: React.MouseEvent<HTMLElement>) => {
     setLogOutClicked(false);
     e.preventDefault();
-    sendRequest();
+    sendLoginRequest();
     clearInputs();
   };
 

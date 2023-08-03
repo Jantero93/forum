@@ -78,6 +78,15 @@ export const useFetch = <T,>(url: string, config?: FetchConfig) => {
   }, [url, config?.method, config?.payload, config, sendRequest]);
 
   const nullResponseError = () => setError('');
+  const nullApiResponse = () => setData(null);
 
-  return { data, loading, error, statusCode, sendRequest, nullResponseError };
+  return {
+    data,
+    loading,
+    error,
+    statusCode,
+    sendRequest,
+    nullResponseError,
+    nullApiResponse
+  };
 };

@@ -7,7 +7,7 @@ type ErrorPageProps = { message: string };
 const ErrorPage = ({ message }: ErrorPageProps) => {
   const error = useRouteError() as ErrorMsg;
 
-  console.log('error', error);
+  console.error('error', error);
 
   const errorMessageText = `Error: ${message} , try later again`;
 

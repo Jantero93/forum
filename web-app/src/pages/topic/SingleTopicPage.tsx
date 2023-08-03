@@ -16,7 +16,7 @@ const SingleTopicPage = () => {
     null
   );
 
-  const { id } = useParams();
+  const { id: topicIdFromUrl } = useParams();
   const { authState } = useAuthContext();
 
   const voteUrl = `${env.API_URL}/posts/${
@@ -34,7 +34,7 @@ const SingleTopicPage = () => {
 
   const newPostPayload = {
     message: msg,
-    topicId: id
+    topicId: topicIdFromUrl
   } as const;
 
   const { sendRequest, data } = useFetch<PostDto>(`${env.API_URL}/posts`, {
@@ -43,15 +43,17 @@ const SingleTopicPage = () => {
   });
 
   const { data: topicResponse } = useFetch<TopicWithPostsDto>(
-    `${env.API_URL}/topics/${id}`
+    `${env.API_URL}/topics/${topicIdFromUrl}`
   );
 
+  // Update components posts if creating new post is successful
   useEffect(() => {
     if (data) {
       setPosts((prevPosts) => [...prevPosts, data]);
     }
   }, [data]);
 
+  // Update voted post count if voting post reqeust is successful
   useEffect(() => {
     if (!responseVotedDto) return;
 
@@ -63,6 +65,7 @@ const SingleTopicPage = () => {
     setPosts(updateNewPost);
   }, [responseVotedDto]);
 
+  // Render new posts if topic changes
   useEffect(() => {
     if (topicResponse) setPosts(topicResponse.posts);
   }, [topicResponse]);
@@ -137,7 +140,7 @@ const SingleTopicPage = () => {
                 sendVotePostRequest={sendVotePostRequest}
               />
             </div>
-            {posts.map(({ id, user, createdTime, message, votes }) => (
+            {posts.map(({ id, user, createdTime, message, votes, userId }) => (
               <PostCard
                 key={id}
                 postId={id}
@@ -146,6 +149,7 @@ const SingleTopicPage = () => {
                 user={user}
                 votes={votes}
                 sendVotePostRequest={sendVotePostRequest}
+                postsUserId={userId}
               />
             ))}
             {authState.isLogged && (
