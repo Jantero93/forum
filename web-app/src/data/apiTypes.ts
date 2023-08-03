@@ -26,6 +26,7 @@ export type PostDto = {
   message: string;
   votes: number;
   createdTime: Date;
+  updatedTime: Date;
   user: string;
   userId: number;
 };

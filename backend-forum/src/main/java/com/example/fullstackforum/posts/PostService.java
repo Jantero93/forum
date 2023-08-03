@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -87,7 +88,7 @@ public class PostService {
 
         var post = dbPost.get();
 
-        if (!isUserAllowedToDeletePost(post, user)) {
+        if (isUserNotAllowedInteractWithPost(post, user)) {
             log.warn(
                     "User not allowed to delete post, postId: {}, userId: {}", post.getId(), user.getId()
             );
@@ -102,10 +103,59 @@ public class PostService {
         return new DeletePostResponse("Successfully deleted post", postId);
     }
 
-    private boolean isUserAllowedToDeletePost(Post post, User user) {
+    public PostDto updatePost(PostDto updatedPost) {
+        var requestUser = authenticationService.getAuthenticatedRequestUser();
+
+        log.info("Updating post message, id: {}", updatedPost.id());
+        var dbPost = postRepository.findById(updatedPost.id());
+
+        if (dbPost.isEmpty()) {
+            log.warn("Not found post with postId {}", updatedPost.id());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Not found post with id " + updatedPost.id()
+            );
+        }
+
+        var originalPost = dbPost.get();
+
+        if (isUserNotAllowedInteractWithPost(originalPost, requestUser)) {
+            log.warn(
+                    "User not allowed to edit post, postId: {}, userId: {}", originalPost.getId(), originalPost.getId()
+            );
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to edit post");
+        }
+
+        // Message can be updated within hour from last creation time
+        var timeNow = new Date();
+
+        if (isDateDifferenceMoreThanHour(timeNow, originalPost.getCreatedTime())) {
+            log.warn(
+                    "More than one hour from last modification, editing forbidden, postId: {}", updatedPost.id()
+            );
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "More than one hour from last post modification, can not edit anymore"
+            );
+        }
+
+        originalPost.setMessage(updatedPost.message());
+
+        var updatedDb = postRepository.save(originalPost);
+        return postMapper.mapPostToPostDto(updatedDb);
+    }
+
+    private boolean isUserNotAllowedInteractWithPost(Post post, User user) {
         var isUsersOwnPost = Objects.equals(post.getUser().getId(), user.getId());
         var isAdmin = user.getRole() == Role.ADMIN;
 
-        return isAdmin || isUsersOwnPost;
+        return !isAdmin && !isUsersOwnPost;
+    }
+
+    private boolean isDateDifferenceMoreThanHour(Date newerDate, Date olderDate) {
+        final int ONE_HOUR = 1;
+        final int HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+
+        var diffInHours = newerDate.getTime() - olderDate.getTime() / (HOUR_IN_MILLISECONDS);
+        return diffInHours > ONE_HOUR;
     }
 }

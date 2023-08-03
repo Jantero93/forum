@@ -9,6 +9,7 @@ public class PostMapper {
         return PostDto.builder()
                 .id(post.getId())
                 .createdTime(post.getCreatedTime())
+                .updatedTime(post.getUpdatedTime())
                 .user(post.getUser().getEmail())
                 .votes(post.getVotes())
                 .message(post.getMessage())

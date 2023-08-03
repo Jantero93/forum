@@ -19,3 +19,12 @@ export const isBefore = (
 
   return moment(moment1).isBefore(moment2);
 };
+
+export const timeDifferenceLessThanHourFromPresent = (dateToCompare: Date) => {
+  const dateNow = moment();
+  const diffDate = moment(dateToCompare);
+
+  const oneHour = 1;
+
+  return oneHour > dateNow.diff(diffDate, 'hours');
+};

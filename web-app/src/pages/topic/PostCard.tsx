@@ -1,7 +1,10 @@
 import { dateFormatForum } from '~/util/consts';
-import { formatDate } from '~/util/dateHelpers';
+import {
+  formatDate,
+  timeDifferenceLessThanHourFromPresent
+} from '~/util/dateHelpers';
 
-import { MdThumbUp, MdDelete } from 'react-icons/md';
+import { MdThumbUp, MdDelete, MdModeEdit } from 'react-icons/md';
 import { useAuthContext } from '~/contexts/AuthContextProvider';
 type PostCardProps = {
   postId?: number;
@@ -16,6 +19,9 @@ type PostCardProps = {
 
 const voteIconColor = '#48A047';
 const deleteIconColor = '#b04231';
+const editIconColorEnabled = '#ffd966';
+const editIconColorDisabled = '#747679';
+const iconSize = 30;
 
 const PostCard = ({
   postId,
@@ -34,8 +40,16 @@ const PostCard = ({
     authState: { userId: loggedInUserId, role }
   } = useAuthContext();
 
-  const isUserAllowedDeletePost = () =>
+  const isUserAllowedInteractWithPost = () =>
     role === 'ADMIN' || postsUserId === loggedInUserId;
+
+  const showEnabledOrDisabledIcon = () => {
+    if (role === 'ADMIN') {
+      return true;
+    }
+
+    return timeDifferenceLessThanHourFromPresent(createdTime);
+  };
 
   return (
     <div
@@ -51,9 +65,24 @@ const PostCard = ({
             id="button-container"
             className="flex justify-end flex-grow gap-2"
           >
+            {isUserAllowedInteractWithPost() && (
+              <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
+                <MdModeEdit
+                  size={iconSize}
+                  alignmentBaseline="baseline"
+                  cursor={showEnabledOrDisabledIcon() ? 'pointer' : 'cursor'}
+                  color={
+                    showEnabledOrDisabledIcon()
+                      ? editIconColorEnabled
+                      : editIconColorDisabled
+                  }
+                  onClick={() => console.log('clicked')}
+                />
+              </span>
+            )}
             <span className="flex gap-2 px-2 py-1 rounded-xl bg-slate-600">
               <MdThumbUp
-                size="30"
+                size={iconSize}
                 color={voteIconColor}
                 alignmentBaseline="auto"
                 cursor="pointer"
@@ -63,10 +92,10 @@ const PostCard = ({
                 {votes === 0 ? '0' : `+${votes}`}
               </span>
             </span>
-            {isUserAllowedDeletePost() && (
+            {isUserAllowedInteractWithPost() && (
               <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
                 <MdDelete
-                  size="30"
+                  size={iconSize}
                   alignmentBaseline="baseline"
                   cursor="pointer"
                   color={deleteIconColor}

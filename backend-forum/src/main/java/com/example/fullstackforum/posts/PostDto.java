@@ -10,6 +10,7 @@ public record PostDto(
         String message,
         Integer votes,
         Date createdTime,
+        Date updatedTime,
         String user,
         Integer userId
 ) {
