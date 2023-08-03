@@ -27,6 +27,7 @@ export type PostDto = {
   votes: number;
   createdTime: Date;
   user: string;
+  userId: number;
 };
 
 export type TopicDto = {

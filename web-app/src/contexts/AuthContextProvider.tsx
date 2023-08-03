@@ -9,6 +9,7 @@ type AuthContextType = {
   isLogged: boolean;
   role: string | null;
   username: string | null;
+  userId: number | null;
 };
 
 const initialState: AuthContextType = {
@@ -16,7 +17,8 @@ const initialState: AuthContextType = {
   token: null,
   isLogged: false,
   role: null,
-  username: null
+  username: null,
+  userId: null
 };
 
 const AuthUpdateContext = React.createContext({
@@ -40,6 +42,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [username, setUsername] = useState<string | null>(null);
   const [isLogged, setIsLogged] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   const setNotLoggedState = useCallback(() => {
     setLocalStorageToken(null);
@@ -48,6 +51,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setRole(null);
     setUsername(null);
     setIsLogged(false);
+    setUserId(null);
   }, [setLocalStorageToken]);
 
   const updateAuthState = useCallback(
@@ -59,11 +63,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
       setLocalStorageToken(token);
 
-      const { exp, role, sub } = decodeJwtClaims(token);
+      const { exp, role, sub, userId } = decodeJwtClaims(token);
       setExp(exp);
       setRole(role);
       setUsername(sub);
       setIsLogged(true);
+      setUserId(userId);
     },
     [setLocalStorageToken, setNotLoggedState]
   );
@@ -74,9 +79,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       role,
       token,
       username,
-      isLogged
+      isLogged,
+      userId
     }),
-    [exp, isLogged, role, token, username]
+    [exp, isLogged, role, token, username, userId]
   );
 
   const checkTokenExpiration = useCallback(() => {
@@ -85,7 +91,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    const { exp, role, sub } = decodeJwtClaims(token);
+    const { exp, role, sub, userId } = decodeJwtClaims(token);
 
     if (isBefore(exp, new Date())) {
       setNotLoggedState();
@@ -95,6 +101,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setRole(role);
     setUsername(sub);
     setIsLogged(true);
+    setUserId(userId);
   }, [setNotLoggedState, token]);
 
   const contextState = useMemo(

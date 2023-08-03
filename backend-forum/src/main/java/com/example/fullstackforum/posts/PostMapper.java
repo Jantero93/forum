@@ -12,6 +12,7 @@ public class PostMapper {
                 .user(post.getUser().getEmail())
                 .votes(post.getVotes())
                 .message(post.getMessage())
+                .userId(post.getUser().getId())
                 .build();
     }
 }

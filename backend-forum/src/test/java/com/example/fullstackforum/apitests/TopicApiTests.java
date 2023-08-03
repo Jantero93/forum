@@ -44,14 +44,6 @@ class TopicApiTests {
     @Autowired
     private PostRepository postRepository;
 
-    @Value("${spring.datasource.url}")
-    private String connectionString;
-
-    @BeforeEach
-    void beforeEach() {
-        log.debug("datasource url: {}", connectionString);
-    }
-
     @Test
     void getTopic_ShouldReturnOk() {
 

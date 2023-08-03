@@ -89,6 +89,7 @@ class PostApiTest {
         Assertions.assertEquals(body.user(), username);
         Assertions.assertEquals(body.votes(), 0);
         Assertions.assertTrue(body.createdTime().before(new Date()));
+        Assertions.assertEquals(body.userId(), userDb.get().getId());
 
         // Delete mock up date
         postRepository.deleteById(body.id());
@@ -158,6 +159,7 @@ class PostApiTest {
         Assertions.assertEquals(newPostBody.user(), voteBody.user());
         Assertions.assertEquals(newPostBody.votes() + 1, voteBody.votes());
         Assertions.assertEquals(newPostBody.createdTime(), voteBody.createdTime());
+        Assertions.assertEquals(newPostBody.userId(), voteBody.userId());
 
         // Delete mock up date
         postRepository.deleteById(newPostBody.id());

@@ -55,6 +55,7 @@ public class JwtService {
 
         var user = (User) userDetails;
         extraClaims.put("role", user.getRole().name());
+        extraClaims.put("userId", user.getId());
 
         return generateToken(extraClaims, userDetails);
     }

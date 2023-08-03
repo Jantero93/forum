@@ -101,7 +101,7 @@ const SingleTopicPage = () => {
       return;
     }
 
-    // Voted alreadu
+    // Voted already
     if (voteResStatusCode === 400 && authState.isLogged) {
       sendToast.error('You have already voted this post');
       nullVoteResponseError();
