@@ -1,4 +1,3 @@
-import { dateFormatForum } from '~/util/consts';
 import {
   formatDate,
   timeDifferenceLessThanHourFromPresent
@@ -29,6 +28,9 @@ const deleteIconColor = '#b04231';
 const editIconColorEnabled = '#ffd966';
 const editIconColorDisabled = '#747679';
 const iconSize = 30;
+const alignmentBaseline = 'baseline';
+
+const dateFormatForum = 'DD.MM.YYYY [klo] H:mm:ss';
 
 const PostCard = ({
   postId,
@@ -114,7 +116,7 @@ const PostCard = ({
               <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
                 <MdModeEdit
                   size={iconSize}
-                  alignmentBaseline="baseline"
+                  alignmentBaseline={alignmentBaseline}
                   cursor={showEnabledOrDisabledIcon() ? 'pointer' : 'cursor'}
                   color={
                     showEnabledOrDisabledIcon()
@@ -133,7 +135,7 @@ const PostCard = ({
               <MdThumbUp
                 size={iconSize}
                 color={voteIconColor}
-                alignmentBaseline="auto"
+                alignmentBaseline={alignmentBaseline}
                 cursor="pointer"
                 onClick={() => sendVotePostRequest(postId)}
               />
@@ -145,7 +147,7 @@ const PostCard = ({
               <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
                 <MdDelete
                   size={iconSize}
-                  alignmentBaseline="baseline"
+                  alignmentBaseline={alignmentBaseline}
                   cursor="pointer"
                   color={deleteIconColor}
                   onClick={() => sendDeletePostRequest(postId)}

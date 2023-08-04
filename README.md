@@ -8,7 +8,7 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 
 - ~~Users can upvote posts~~ **Done**
 - ~~All tests run on pipeline~~ **Done**
-- Users can edit posts in one hour from creation
+- ~~Users can edit posts in one hour from creation~~ **Done**
 - Images can be attached to posts
 - Long term goal: Put this application running on AWS or Azure
 

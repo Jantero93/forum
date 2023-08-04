@@ -40,6 +40,7 @@ public class ApplicationLoader implements ApplicationRunner {
             log.info("No 'dev' or 'prod' profile, skipping data initialization");
         }
 
+        log.info("--- Backend ready to use ---");
     }
 
 

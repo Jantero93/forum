@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { dateFormatForum } from '~/util/consts';
 import { formatDate } from '~/util/dateHelpers';
 
 type TopicCardProps = {
@@ -9,6 +8,8 @@ type TopicCardProps = {
   header: string;
   message: string;
 };
+
+const dateFormatForum = 'DD.MM.YYYY [klo] H:mm:ss';
 
 const TopicCard = ({
   createdTime,
