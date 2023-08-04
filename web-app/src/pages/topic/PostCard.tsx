@@ -6,6 +6,8 @@ import {
 
 import { MdThumbUp, MdDelete, MdModeEdit } from 'react-icons/md';
 import { useAuthContext } from '~/contexts/AuthContextProvider';
+import EditPostModal from '~/components/EditPostModal';
+import { Dispatch, SetStateAction, useState } from 'react';
 type PostCardProps = {
   postId?: number;
   user: string;
@@ -15,6 +17,11 @@ type PostCardProps = {
   postsUserId?: number;
   sendVotePostRequest: (postId: number) => void;
   sendDeletePostRequest: (postId: number) => void;
+  editMessage?: string;
+  setEditMessage?: Dispatch<SetStateAction<string>>;
+  clickedEditedPost?: number | null;
+  setClickedEditedPost?: Dispatch<SetStateAction<number | null>>;
+  setSendPutRequest?: Dispatch<SetStateAction<boolean>>;
 };
 
 const voteIconColor = '#48A047';
@@ -31,8 +38,15 @@ const PostCard = ({
   votes,
   postsUserId,
   sendVotePostRequest,
-  sendDeletePostRequest
+  sendDeletePostRequest,
+  editMessage,
+  setEditMessage,
+  clickedEditedPost,
+  setClickedEditedPost,
+  setSendPutRequest
 }: PostCardProps) => {
+  const [showEditForm, setShowEditFrom] = useState(false);
+
   const bgColorOfTopicsFirstPost =
     postId === undefined ? 'bg-slate-900' : 'bg-slate-700';
 
@@ -40,7 +54,7 @@ const PostCard = ({
     authState: { userId: loggedInUserId, role }
   } = useAuthContext();
 
-  const isUserAllowedInteractWithPost = () =>
+  const isUserAllowedInteractWithPost =
     role === 'ADMIN' || postsUserId === loggedInUserId;
 
   const showEnabledOrDisabledIcon = () => {
@@ -49,6 +63,37 @@ const PostCard = ({
     }
 
     return timeDifferenceLessThanHourFromPresent(createdTime);
+  };
+
+  const handleShowEditMessageForm = () => {
+    if (setClickedEditedPost === undefined || postId === undefined) {
+      return;
+    }
+
+    if (clickedEditedPost === postId) {
+      setShowEditFrom(false);
+      setClickedEditedPost(null);
+      return;
+    }
+
+    setClickedEditedPost(postId);
+    setShowEditFrom(true);
+  };
+
+  const shouldShowEditForm =
+    showEditForm &&
+    editMessage !== undefined &&
+    setEditMessage !== undefined &&
+    postId === clickedEditedPost;
+
+  const sendEditedMessageRequest = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (!clickedEditedPost || setSendPutRequest === undefined) {
+      return;
+    }
+
+    setSendPutRequest(true);
   };
 
   return (
@@ -65,7 +110,7 @@ const PostCard = ({
             id="button-container"
             className="flex justify-end flex-grow gap-2"
           >
-            {isUserAllowedInteractWithPost() && (
+            {isUserAllowedInteractWithPost && (
               <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
                 <MdModeEdit
                   size={iconSize}
@@ -76,7 +121,11 @@ const PostCard = ({
                       ? editIconColorEnabled
                       : editIconColorDisabled
                   }
-                  onClick={() => console.log('clicked')}
+                  onClick={
+                    showEnabledOrDisabledIcon()
+                      ? handleShowEditMessageForm
+                      : void 0
+                  }
                 />
               </span>
             )}
@@ -92,7 +141,7 @@ const PostCard = ({
                 {votes === 0 ? '0' : `+${votes}`}
               </span>
             </span>
-            {isUserAllowedInteractWithPost() && (
+            {isUserAllowedInteractWithPost && (
               <span className="flex self-center gap-2 px-2 py-1 rounded-xl bg-slate-600">
                 <MdDelete
                   size={iconSize}
@@ -107,6 +156,15 @@ const PostCard = ({
         )}
       </section>
       <p className="mt-5 text-xl text-slate-300">{message}</p>
+      {shouldShowEditForm &&
+        editMessage !== undefined &&
+        setEditMessage !== undefined && (
+          <EditPostModal
+            message={editMessage}
+            setEditMessage={setEditMessage}
+            sendEditedMessage={sendEditedMessageRequest}
+          />
+        )}
     </div>
   );
 };

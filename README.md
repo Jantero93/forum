@@ -103,7 +103,7 @@ Project starts on port 8080
 
 <h3>Postgres</h3>
 
-Create database called `java-forum` Hibernate will automatically populate all needed database tables. Testing environment needs database `java-forum-test`
+Create database called `java-forum`. Hibernate will automatically populate all needed database tables. Testing environment needs database `java-forum-test`
 
 ---
 

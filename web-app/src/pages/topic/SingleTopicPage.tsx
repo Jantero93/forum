@@ -13,6 +13,7 @@ type DeleteResponse = { message: string; postId: number };
 
 const SingleTopicPage = () => {
   const [msg, setMsg] = useState('');
+  const [editMsg, setEditMsg] = useState('');
   const [posts, setPosts] = useState<PostDto[]>([]);
   const [clickedUpVotePost, setClickedUpVotePost] = useState<number | null>(
     null
@@ -20,6 +21,10 @@ const SingleTopicPage = () => {
   const [clickedDeletePost, setClickedDeletePost] = useState<number | null>(
     null
   );
+  const [clickedEditedPost, setClickedEditedPost] = useState<number | null>(
+    null
+  );
+  const [sendPutRequest, setSendPutRequest] = useState(false);
 
   const { id: topicIdFromUrl } = useParams();
   const { authState } = useAuthContext();
@@ -53,6 +58,22 @@ const SingleTopicPage = () => {
     useFetch<DeleteResponse>(`${env.API_URL}/posts/${clickedDeletePost}`, {
       method: 'DELETE'
     });
+
+  const getPutPayload = (): PostDto | undefined => {
+    const oldPost = posts.find((p) => p.id === clickedEditedPost);
+    if (!oldPost) return undefined;
+
+    return { ...oldPost, message: editMsg };
+  };
+
+  const {
+    data: putResponse,
+    sendRequest: putPostRequest,
+    nullApiResponse: nullPutPostResponse
+  } = useFetch<PostDto>(`${env.API_URL}/posts/${clickedEditedPost}`, {
+    method: 'PUT',
+    payload: getPutPayload()
+  });
 
   // Update components posts if creating new post is successful
   useEffect(() => {
@@ -91,14 +112,31 @@ const SingleTopicPage = () => {
     sendToast.success('Successfully deleted post');
   }, [deleteResponse]);
 
+  // Update updated post if put request is successful
+  useEffect(() => {
+    if (!putResponse) {
+      return;
+    }
+
+    const updateModifiedPost = (prevPosts: PostDto[]) =>
+      prevPosts.map((oldPost) =>
+        putResponse.id === oldPost.id ? putResponse : oldPost
+      );
+
+    setPosts(updateModifiedPost);
+    setSendPutRequest(false);
+    sendToast.success('Successfully updated post');
+    setEditMsg('');
+    nullPutPostResponse();
+  }, [putResponse, nullPutPostResponse]);
+
   // Render new posts if topic changes
   useEffect(() => {
     if (topicResponse) setPosts(topicResponse.posts);
   }, [topicResponse]);
 
-  const sendPostClicked = async (e: React.MouseEvent) => {
+  const sendPostClicked = (e: React.MouseEvent) => {
     e.preventDefault();
-
     sendRequest();
   };
 
@@ -134,6 +172,17 @@ const SingleTopicPage = () => {
     deletePostRequest();
     setClickedDeletePost(null);
   }, [clickedDeletePost, deletePostRequest]);
+
+  // Clicked edit message send request
+  useEffect(() => {
+    console.log('sendPutRequest', sendPutRequest);
+    if (clickedEditedPost === null || !sendPutRequest) {
+      return;
+    }
+
+    putPostRequest();
+    setClickedEditedPost(null);
+  }, [clickedEditedPost, putPostRequest, sendPutRequest]);
 
   // Vote error response from api
   useEffect(() => {
@@ -196,6 +245,11 @@ const SingleTopicPage = () => {
                 sendVotePostRequest={sendVotePostRequest}
                 sendDeletePostRequest={sendDeletePostRequest}
                 postsUserId={userId}
+                editMessage={editMsg}
+                setEditMessage={setEditMsg}
+                clickedEditedPost={clickedEditedPost}
+                setClickedEditedPost={setClickedEditedPost}
+                setSendPutRequest={setSendPutRequest}
               />
             ))}
             {authState.isLogged && (

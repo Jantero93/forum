@@ -46,7 +46,8 @@ const NewPostForm = ({
         />
         <div className="flex flex-col w-1/12 gap-2 ml-2" id="post-toolbox">
           <button
-            className="px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:text-slate-200 hover:bg-green-700"
+            disabled
+            className="px-3 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:text-slate-200"
             onClick={imageClicked}
           >
             Image

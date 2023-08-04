@@ -128,7 +128,7 @@ public class PostService {
         // Message can be updated within hour from last creation time
         var timeNow = new Date();
 
-        if (isDateDifferenceMoreThanHour(timeNow, originalPost.getCreatedTime())) {
+        if (isDateDifferenceMoreThanHour(timeNow, originalPost.getCreatedTime()) && requestUser.getRole() != Role.ADMIN) {
             log.warn(
                     "More than one hour from last modification, editing forbidden, postId: {}", updatedPost.id()
             );
@@ -152,10 +152,10 @@ public class PostService {
     }
 
     private boolean isDateDifferenceMoreThanHour(Date newerDate, Date olderDate) {
-        final int ONE_HOUR = 1;
-        final int HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+        final long HOUR_IN_MINUTES = 60L;
+        final long MINUTE_IN_MILLISECONDS = 1000L * 60L;
 
-        var diffInHours = newerDate.getTime() - olderDate.getTime() / (HOUR_IN_MILLISECONDS);
-        return diffInHours > ONE_HOUR;
+        var diffInMinutes = (newerDate.getTime() - olderDate.getTime()) / (MINUTE_IN_MILLISECONDS);
+        return diffInMinutes > HOUR_IN_MINUTES;
     }
 }
