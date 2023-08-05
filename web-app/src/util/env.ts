@@ -10,5 +10,6 @@ const getEnv = (key: string) => {
 
 export default {
   API_URL: getEnv('VITE_APP_API_URL'),
-  NODE_ENV: getEnv('VITE_NODE_ENV')
+  NODE_ENV: getEnv('VITE_NODE_ENV'),
+  DEFAULT_TITLE: getEnv('VITE_APP_TITLE')
 };

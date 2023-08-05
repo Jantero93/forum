@@ -4,10 +4,16 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json /app/
 RUN npm ci --silent --no-audit
+
 ARG VITE_APP_API_URL
 ENV VITE_APP_API_URL $VITE_APP_API_URL
+
 ARG VITE_NODE_ENV
 ENV VITE_NODE_ENV $VITE_NODE_ENV
+
+ARG VITE_APP_TITLE
+ENV VITE_APP_TITLE $VITE_APP_TITLE
+
 COPY . /app
 RUN npm run build
 
