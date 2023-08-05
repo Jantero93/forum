@@ -8,5 +8,8 @@
   "cSpell.enableFiletypes": ["typescriptreact"],
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "[nginx]": {
+    "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
   }
 }
