@@ -3,7 +3,7 @@ FROM node:18.16.0-alpine AS build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json /app/
-RUN npm ci --silent --no-audit
+RUN npm ci --silent
 
 ARG VITE_APP_API_URL
 ENV VITE_APP_API_URL $VITE_APP_API_URL

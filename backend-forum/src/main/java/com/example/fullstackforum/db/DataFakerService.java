@@ -12,6 +12,8 @@ import com.example.fullstackforum.topic.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,12 @@ public class DataFakerService {
     private final PasswordEncoder passwordEncoder;
     private final TopicRepository topicRepository;
     private final PostRepository postRepository;
+
+    @Value("${WEBAPP_ADMIN_USERNAME}")
+    private String adminUsername;
+
+    @Value("${WEBAPP_ADMIN_USER_PASSWORD}")
+    private String adminPassword;
 
     @Bean
     public Faker faker() {
@@ -94,7 +102,7 @@ public class DataFakerService {
 
     private void generateAdminUser() {
         log.info("Initializing admin user");
-        var adminDbUser = userRepository.findByEmail("admin");
+        var adminDbUser = userRepository.findByEmail(adminUsername);
 
         if (adminDbUser.isPresent()) {
             log.info("Admin user exists, skipping initialization");
@@ -102,8 +110,8 @@ public class DataFakerService {
         }
 
         var admin = User.builder()
-                .email("admin")
-                .password(passwordEncoder.encode("root"))
+                .email(adminUsername)
+                .password(passwordEncoder.encode(adminPassword))
                 .role(Role.ADMIN)
                 .build();
 
@@ -159,7 +167,7 @@ public class DataFakerService {
         var users = userRepository.findAll();
         var notUserAdmin = users.stream()
                 .filter(
-                        u -> !u.getEmail().equals("admin")
+                        u -> !u.getEmail().equals(adminUsername)
                 )
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Error on getting fake user for fake topics"));
@@ -192,7 +200,7 @@ public class DataFakerService {
 
         var fakeUser = userRepository.findAll()
                 .stream()
-                .filter(user -> !user.getEmail().equals("admin"))
+                .filter(user -> !user.getEmail().equals(adminUsername))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Error on getting fake user for fake posts"));
 
