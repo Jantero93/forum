@@ -12,7 +12,7 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 - Images can be attached to posts
 - Long term goal: Put this application running on AWS or Azure
 
-**On dev and prod environments automatically is generated admin user for testing purposes**
+**On dev and local (docker) environments automatically is generated admin user for testing purposes**
 Username: admin, password: root
 
 ---
@@ -58,10 +58,10 @@ Username: admin, password: root
 
 ---
 
-<h2>How to run project with docker (production mode)</h2>
+<h2>How to run project with docker (local mode)</h2>
 In root folder run command
 
-`docker-compose -f "docker-compose.yml" --env-file .env.production up --build`
+`docker-compose -f "docker-compose.yml" --env-file .env.local up --build`
 
 **All needed configurations and env variables are in Git.**
 Application will be hosted on localhost port **80** (Nginx)
