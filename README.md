@@ -4,13 +4,15 @@
 Boards, topics and posts can be readed by anyone, but you have to be registered to create new topics or posts.</p>
 <br>
 
+> **Production link:** http://18.196.102.130/
+
 **Features coming:**
 
 - ~~Users can upvote posts~~ **Done**
 - ~~All tests run on pipeline~~ **Done**
 - ~~Users can edit posts in one hour from creation~~ **Done**
 - Images can be attached to posts
-- Long term goal: Put this application running on AWS or Azure
+- ~~Long term goal: Put this application running on AWS or Azure~~ **Done** (AWS EC2)
 
 **On dev and local (docker) environments automatically is generated admin user for testing purposes**
 Username: admin, password: root
@@ -20,11 +22,11 @@ Username: admin, password: root
 <h2>Features</h2>
 
 - Individual users with roles
-- Admin can delete any posts
+- Users can delete own posts. Admin can delete any posts
 - Boards are predefined at the moment
-- Users can delete only own posts
 - Users can create topics
 - Users can upvote posts (one upvote per post)
+- Users can update own posts one hour from creation. Admin can update anypost anytime.
 - Secure authentication with JSON Web Token
 
 ---
@@ -36,7 +38,7 @@ Username: admin, password: root
 > - React + (TypeScript)
 > - Tailwind CSS
 > - React router V6
-> - Nginx (only when dockerizing application)
+> - Nginx (only when dockerizing product application)
 
 <h3>Backend (REST API)</h3>
 
@@ -55,6 +57,7 @@ Username: admin, password: root
 
 > - Docker (not needed for local developing, only used for creating prodcution application and for testing on pipeline)
 > - GitHub Actions pipeline
+> - AWS (EC2)
 
 ---
 
@@ -71,8 +74,8 @@ Application will be hosted on localhost port **80** (Nginx)
 
 - Node 18
 - Java 17
-- PostgreSQL 15.1 (some other version may be ok, not tested)
-- Maven
+- PostgreSQL 15.1 (some other versions may be ok, not tested)
+- Maven 3.9.1 (some other versions may be ok, not tested)
 
 <h3>Frontend</h3>
 
