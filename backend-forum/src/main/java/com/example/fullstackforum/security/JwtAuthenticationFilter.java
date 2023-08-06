@@ -1,5 +1,6 @@
 package com.example.fullstackforum.security;
 
+import com.example.fullstackforum.misc.statistics.StatisticsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final StatisticsService statisticsService;
     private static final String AUTHORIZATION_HEADER = "authorization";
 
     @Override
@@ -35,6 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+
+        statisticsService.saveSessionToDatabase(request.getRequestedSessionId());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
