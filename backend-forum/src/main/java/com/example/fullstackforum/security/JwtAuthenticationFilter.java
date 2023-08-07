@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-        statisticsService.saveSessionToDatabase(request.getRequestedSessionId());
+        statisticsService.saveSessionToDatabase(request.getSession().getId());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
