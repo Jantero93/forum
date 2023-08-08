@@ -26,4 +26,6 @@ public class Statistics {
     private Date visitedTime;
 
     private String sessionId;
+
+    private String ipAddress;
 }
