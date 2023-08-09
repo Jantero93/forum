@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -18,12 +19,12 @@ public class StatisticsInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION_HEADER = "authorization";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler
+    ) throws Exception {
         final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
-
-        log.debug("Triggered");
-        log.info("=====================");
-        log.info("X-Forwarded-For: {}", request.getHeader("X-Forwarded-For"));
 
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             return true;
@@ -31,7 +32,7 @@ public class StatisticsInterceptor implements HandlerInterceptor {
 
         var ip = request.getRemoteAddr();
         var sessionId = request.getSession().getId();
-        var username = request.getAttribute("username").toString();
+        var username = (String) request.getAttribute("username");
 
         if (username != null) {
             log.info("Saving session to database with username: {}", username);
