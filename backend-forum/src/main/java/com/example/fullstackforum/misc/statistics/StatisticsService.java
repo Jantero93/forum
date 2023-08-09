@@ -9,10 +9,11 @@ public class StatisticsService {
 
     private final StatisticsRepository statisticsRepository;
 
-    public void saveSessionToDatabase(String remoteAddress, String sessionId) {
+    public void saveSessionToDatabase(String remoteAddress, String sessionId, String username) {
         var statisticsEntity = Statistics.builder()
                 .sessionId(sessionId)
                 .ipAddress(remoteAddress)
+                .username(username)
                 .build();
 
         statisticsRepository.save(statisticsEntity);
