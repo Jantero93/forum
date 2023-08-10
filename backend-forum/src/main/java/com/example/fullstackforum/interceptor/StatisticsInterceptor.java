@@ -16,29 +16,24 @@ public class StatisticsInterceptor implements HandlerInterceptor {
     @Autowired
     private StatisticsService statisticsService;
 
-    private static final String AUTHORIZATION_HEADER = "authorization";
-
     @Override
     public boolean preHandle(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull Object handler
     ) throws Exception {
-        final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
-            return true;
-        }
-
+        var authenticatedUsername = (String) request.getAttribute("username");
         var ip = request.getRemoteAddr();
         var sessionId = request.getSession().getId();
-        var username = (String) request.getAttribute("username");
 
-        if (username != null) {
-            log.info("Saving session to database with username: {}", username);
+
+        if (authenticatedUsername != null) {
+            log.info("Saving session statistics to database with authenticated username: {}", authenticatedUsername);
+        } else {
+            log.info("Saving session statistics without authenticated user");
         }
 
-        statisticsService.saveSessionToDatabase(ip, sessionId, username);
+        statisticsService.saveSessionToDatabase(ip, sessionId, authenticatedUsername);
         return true;
     }
 }
