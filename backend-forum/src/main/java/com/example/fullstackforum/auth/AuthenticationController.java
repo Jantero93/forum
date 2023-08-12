@@ -19,7 +19,7 @@ public class AuthenticationController {
     @GetMapping("a")
     public Object test() {
         var deleteCommand = "DELETE FROM #TABLE#";
-        var tableNames = List.of("tokens", "posts", "topics", "users_", "boards");
+        var tableNames = List.of("tokens", "posts", "topics", "users_", "boards", "statistics");
         tableNames.forEach(name -> {
             var query = deleteCommand.replace("#TABLE#", name);
 

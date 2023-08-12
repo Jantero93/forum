@@ -175,7 +175,6 @@ const SingleTopicPage = () => {
 
   // Clicked edit message send request
   useEffect(() => {
-    console.log('sendPutRequest', sendPutRequest);
     if (clickedEditedPost === null || !sendPutRequest) {
       return;
     }
