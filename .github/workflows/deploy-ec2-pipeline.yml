@@ -1,12 +1,10 @@
 name: Run all tests
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
+  schedule:
+    - 0 0 * * *
+    - master
 
 jobs:
   Update-production-server:
