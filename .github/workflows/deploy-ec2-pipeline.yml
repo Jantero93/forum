@@ -1,4 +1,4 @@
-name: Deploy to EC2 server
+name: Deploy to production
 
 on:
   pull_request:
@@ -9,14 +9,16 @@ on:
 
 jobs:
   Deploy:
-    name: Deploy to EC2 Production Server
+    name: Deploy to EC2 production server
     timeout-minutes: 30
+
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - name: executing remote ssh commands using password
+      - name: Use SSH to connect EC2 and install production version
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
