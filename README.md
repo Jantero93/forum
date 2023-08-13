@@ -4,7 +4,7 @@
 Boards, topics and posts can be readed by anyone, but you have to be registered to create new topics or posts.</p>
 <br>
 
-> **Production link:** http://18.196.102.130/
+> **Production link:** http://35.158.214.245/
 
 **Features coming:**
 
