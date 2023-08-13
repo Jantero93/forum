@@ -55,6 +55,8 @@ services:
       - backend
     networks:
       - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   backend:
     image: backend-${ENV}
