@@ -30,4 +30,6 @@ public class Statistics {
     private String ipAddress;
 
     private String username;
+
+    private String path;
 }

@@ -1,4 +1,4 @@
-package com.example.fullstackforum.interceptor;
+package com.example.fullstackforum.middleware.interceptors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
