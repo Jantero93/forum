@@ -1,12 +1,14 @@
-name: Run all tests
+name: Deploy to EC2 server
 
 on:
   pull_request:
-  schedule:
-    - 0 0 * * *
+    types:
+      - closed
+    branches:
+      - master
 
 jobs:
-  Update-production-server:
+  Deploy:
     name: Deploy to EC2 Production Server
     timeout-minutes: 30
     runs-on: ubuntu-latest
