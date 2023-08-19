@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { PostDto } from '~/data/apiTypes';
+import { toast as sendToast } from 'react-toastify';
 
 type PostModificationType = 'ADD' | 'UPDATE' | 'DELETE';
 
@@ -19,10 +20,12 @@ const useUpdatePosts = (
     const addPost = (newPost: PostDto) =>
       setPosts((prevPosts) => prevPosts.concat(newPost));
 
-    const deletePost = (deletedPostId: number) =>
+    const deletePost = (deletedPostId: number) => {
       setPosts((prevPosts) =>
         prevPosts.filter((post) => post.id !== deletedPostId)
       );
+      sendToast.success('Successfully deleted post');
+    };
 
     if (!postDto) {
       return;

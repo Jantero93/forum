@@ -52,16 +52,20 @@ const SingleTopicPage = () => {
     payload: newPostPayload
   });
 
+  const deletePost = useApiRequest<DeleteResponse>(
+    `${env.API_URL}/posts/${clickedDeletePost}`,
+    {
+      method: 'DELETE',
+      payload: newPostPayload
+    }
+  );
+
   useUpdatePosts(createPost.responseData, 'ADD', setPosts);
+  useUpdatePosts(deletePost.responseData?.postId ?? null, 'DELETE', setPosts);
 
   const { data: topicResponse } = useFetch<TopicWithPostsDto>(
     `${env.API_URL}/topics/${topicIdFromUrl}`
   );
-
-  const { data: deleteResponse, sendRequest: deletePostRequest } =
-    useFetch<DeleteResponse>(`${env.API_URL}/posts/${clickedDeletePost}`, {
-      method: 'DELETE'
-    });
 
   const getPutPayload = (): PostDto | undefined => {
     const oldPost = posts.find((p) => p.id === clickedEditedPost);
@@ -92,22 +96,6 @@ const SingleTopicPage = () => {
 
     setPosts(updateNewPost);
   }, [responseVotedDto]);
-
-  // Update posts if delete post is successful
-  useEffect(() => {
-    if (!deleteResponse) {
-      return;
-    }
-
-    const { postId: deletedPostId } = deleteResponse;
-
-    const updateNewPosts = (prevPosts: PostDto[]) =>
-      prevPosts.filter((post) => post.id !== deletedPostId);
-
-    setPosts(updateNewPosts);
-    setClickedDeletePost(null);
-    sendToast.success('Successfully deleted post');
-  }, [deleteResponse]);
 
   // Update updated post if put request is successful
   useEffect(() => {
@@ -166,9 +154,9 @@ const SingleTopicPage = () => {
       return;
     }
 
-    deletePostRequest();
+    deletePost.sendRequest();
     setClickedDeletePost(null);
-  }, [clickedDeletePost, deletePostRequest]);
+  }, [clickedDeletePost, deletePost]);
 
   // Clicked edit message send request
   useEffect(() => {
