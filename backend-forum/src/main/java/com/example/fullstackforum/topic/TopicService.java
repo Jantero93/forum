@@ -2,11 +2,14 @@ package com.example.fullstackforum.topic;
 
 import com.example.fullstackforum.auth.AuthenticationService;
 import com.example.fullstackforum.board.BoardRepository;
+import com.example.fullstackforum.posts.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +33,10 @@ public class TopicService {
 
         var topic = topicDb.get();
 
-        log.info("Filtering deleted posts");
+        log.info("Filtering deleted posts, ordering post by created time");
         var onlyNotDeletedPosts = topic.getPosts().stream()
                 .filter(post -> !post.isDeleted())
+                .sorted(Comparator.comparing(Post::getCreatedTime))
                 .toList();
 
         topic.setPosts(onlyNotDeletedPosts);

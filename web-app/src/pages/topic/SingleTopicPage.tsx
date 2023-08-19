@@ -8,6 +8,8 @@ import env from '~/util/env';
 import NewPostForm from '../../components/NewPostForm';
 import PostCard from './PostCard';
 import { toast as sendToast } from 'react-toastify';
+import useApiRequest from '~/hooks/useApiRequest';
+import useUpdatePosts from '~/hooks/useUpdatePosts';
 
 type DeleteResponse = { message: string; postId: number };
 
@@ -45,10 +47,12 @@ const SingleTopicPage = () => {
     topicId: topicIdFromUrl
   } as const;
 
-  const { sendRequest, data } = useFetch<PostDto>(`${env.API_URL}/posts`, {
+  const createPost = useApiRequest<PostDto>(`${env.API_URL}/posts`, {
     method: 'POST',
     payload: newPostPayload
   });
+
+  useUpdatePosts(createPost.responseData, 'ADD', setPosts);
 
   const { data: topicResponse } = useFetch<TopicWithPostsDto>(
     `${env.API_URL}/topics/${topicIdFromUrl}`
@@ -74,13 +78,6 @@ const SingleTopicPage = () => {
     method: 'PUT',
     payload: getPutPayload()
   });
-
-  // Update components posts if creating new post is successful
-  useEffect(() => {
-    if (data) {
-      setPosts((prevPosts) => [...prevPosts, data]);
-    }
-  }, [data]);
 
   // Update voted post count if voting post reqeust is successful
   useEffect(() => {
@@ -137,7 +134,7 @@ const SingleTopicPage = () => {
 
   const sendPostClicked = (e: React.MouseEvent) => {
     e.preventDefault();
-    sendRequest();
+    createPost.sendRequest();
   };
 
   const sendVotePostRequest = useCallback((postId: number) => {
