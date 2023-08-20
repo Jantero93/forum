@@ -21,8 +21,7 @@ const useApiRequest = <T,>(
     data,
     error: fetchError,
     sendRequest,
-    statusCode: resStatusCode,
-    nullResponseError
+    statusCode: resStatusCode
   } = useFetch<T>(url, config);
 
   useEffect(() => {
@@ -32,19 +31,19 @@ const useApiRequest = <T,>(
   }, [data]);
 
   useEffect(() => {
-    if (fetchError === null || fetchError === '') {
+    const isStatusCodeError = resStatusCode ?? 500 >= 400;
+    const isFetchError = fetchError !== null && fetchError !== '';
+
+    if (!isFetchError || !isStatusCodeError) {
       return;
     }
+
+    console.log('url', url);
 
     setError(fetchError);
     setStatusCode(resStatusCode);
     sendToast.error(fetchError);
-
-    if (url.endsWith('/vote')) {
-      // Handle voting-related errors here
-      // ...
-    }
-  }, [fetchError, resStatusCode, nullResponseError, url]);
+  }, [fetchError, resStatusCode, url]);
 
   return {
     responseData,

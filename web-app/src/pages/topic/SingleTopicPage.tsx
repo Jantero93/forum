@@ -5,9 +5,8 @@ import { useAuthContext } from '~/contexts/AuthContextProvider';
 import { TopicWithPostsDto, PostDto } from '~/data/apiTypes';
 import { useFetch } from '~/hooks/useFetch';
 import env from '~/util/env';
-import NewPostForm from '../../components/NewPostForm';
-import PostCard from './PostCard';
-import { toast as sendToast } from 'react-toastify';
+import NewPostForm from '~/components/NewPostForm';
+import PostCard from '~/pages/topic/PostCard';
 import useApiRequest from '~/hooks/useApiRequest';
 import useUpdatePosts from '~/hooks/useUpdatePosts';
 
@@ -32,15 +31,7 @@ const SingleTopicPage = () => {
   const { authState } = useAuthContext();
 
   const voteUrl = `${env.API_URL}/posts/${clickedUpVotePost}/vote` as const;
-
-  const fetchConfig = { method: 'POST' } as const;
-  const {
-    data: responseVotedDto,
-    error: voteResponseError,
-    sendRequest: postVoteRequest,
-    nullResponseError: nullVoteResponseError,
-    statusCode: voteResStatusCode
-  } = useFetch<PostDto>(voteUrl, fetchConfig);
+  const votePost = useApiRequest<PostDto>(voteUrl, { method: 'POST' });
 
   const newPostPayload = {
     message: msg,
@@ -78,24 +69,11 @@ const SingleTopicPage = () => {
   useUpdatePosts(createPost.responseData, 'ADD', setPosts);
   useUpdatePosts(deletePost.responseData?.postId ?? null, 'DELETE', setPosts);
   useUpdatePosts(putPost.responseData, 'UPDATE', setPosts);
+  useUpdatePosts(votePost.responseData, 'UPDATE', setPosts);
 
   const { data: topicResponse } = useFetch<TopicWithPostsDto>(
     `${env.API_URL}/topics/${topicIdFromUrl}`
   );
-
-  // Update voted post count if voting post reqeust is successful
-  useEffect(() => {
-    if (!responseVotedDto) {
-      return;
-    }
-
-    const updateNewPost = (prevPosts: PostDto[]) =>
-      prevPosts.map((oldPost) =>
-        oldPost.id === responseVotedDto.id ? responseVotedDto : oldPost
-      );
-
-    setPosts(updateNewPost);
-  }, [responseVotedDto]);
 
   // Update updated post if put request is successful
   useEffect(() => {
@@ -131,13 +109,15 @@ const SingleTopicPage = () => {
 
   // Clicked up vote for post
   useEffect(() => {
-    if (clickedUpVotePost === null) {
+    const noVotedPostOrUrlNull =
+      clickedUpVotePost === null || voteUrl.includes('null');
+    if (noVotedPostOrUrlNull) {
       return;
     }
 
-    postVoteRequest();
+    votePost.sendRequest();
     setClickedUpVotePost(null);
-  }, [clickedUpVotePost, postVoteRequest, sendVotePostRequest]);
+  }, [clickedUpVotePost, votePost, voteUrl]);
 
   // Clicked delete post
   useEffect(() => {
@@ -158,31 +138,6 @@ const SingleTopicPage = () => {
     putPost.sendRequest();
     setClickedEditedPost(null);
   }, [clickedEditedPost, sendPutRequest, putPost]);
-
-  // Vote error response from api
-  useEffect(() => {
-    if (!voteResponseError || voteResponseError === '') {
-      return;
-    }
-
-    // Trying vote without authentication
-    if (voteResStatusCode === 403 && !authState.isLogged) {
-      sendToast.error('You have to be logged in to vote posts');
-      nullVoteResponseError();
-      return;
-    }
-
-    // Voted already
-    if (voteResStatusCode === 400 && authState.isLogged) {
-      sendToast.error('You have already voted this post');
-      nullVoteResponseError();
-    }
-  }, [
-    voteResponseError,
-    nullVoteResponseError,
-    voteResStatusCode,
-    authState.isLogged
-  ]);
 
   // TODO: Handle no data situation
   if (!topicResponse) return <div>oh noes</div>;

@@ -10,12 +10,18 @@ const useUpdatePosts = (
   setPosts: React.Dispatch<React.SetStateAction<PostDto[]>>
 ) => {
   useEffect(() => {
-    const updatePosts = (updatedPost: PostDto) =>
+    if (!postDto) {
+      return;
+    }
+
+    const updatePosts = (updatedPost: PostDto) => {
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === updatedPost.id ? updatedPost : post
         )
       );
+      sendToast.success('Successfully updated post');
+    };
 
     const addPost = (newPost: PostDto) =>
       setPosts((prevPosts) => prevPosts.concat(newPost));
@@ -26,10 +32,6 @@ const useUpdatePosts = (
       );
       sendToast.success('Successfully deleted post');
     };
-
-    if (!postDto) {
-      return;
-    }
 
     switch (modificationType) {
       case 'ADD':
