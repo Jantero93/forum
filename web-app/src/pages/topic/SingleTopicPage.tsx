@@ -60,13 +60,6 @@ const SingleTopicPage = () => {
     }
   );
 
-  useUpdatePosts(createPost.responseData, 'ADD', setPosts);
-  useUpdatePosts(deletePost.responseData?.postId ?? null, 'DELETE', setPosts);
-
-  const { data: topicResponse } = useFetch<TopicWithPostsDto>(
-    `${env.API_URL}/topics/${topicIdFromUrl}`
-  );
-
   const getPutPayload = (): PostDto | undefined => {
     const oldPost = posts.find((p) => p.id === clickedEditedPost);
     if (!oldPost) return undefined;
@@ -74,14 +67,21 @@ const SingleTopicPage = () => {
     return { ...oldPost, message: editMsg };
   };
 
-  const {
-    data: putResponse,
-    sendRequest: putPostRequest,
-    nullApiResponse: nullPutPostResponse
-  } = useFetch<PostDto>(`${env.API_URL}/posts/${clickedEditedPost}`, {
-    method: 'PUT',
-    payload: getPutPayload()
-  });
+  const putPost = useApiRequest<PostDto>(
+    `${env.API_URL}/posts/${clickedEditedPost}`,
+    {
+      method: 'PUT',
+      payload: getPutPayload()
+    }
+  );
+
+  useUpdatePosts(createPost.responseData, 'ADD', setPosts);
+  useUpdatePosts(deletePost.responseData?.postId ?? null, 'DELETE', setPosts);
+  useUpdatePosts(putPost.responseData, 'UPDATE', setPosts);
+
+  const { data: topicResponse } = useFetch<TopicWithPostsDto>(
+    `${env.API_URL}/topics/${topicIdFromUrl}`
+  );
 
   // Update voted post count if voting post reqeust is successful
   useEffect(() => {
@@ -99,21 +99,12 @@ const SingleTopicPage = () => {
 
   // Update updated post if put request is successful
   useEffect(() => {
-    if (!putResponse) {
-      return;
+    if (clickedEditedPost === null) {
+      setEditMsg('');
     }
 
-    const updateModifiedPost = (prevPosts: PostDto[]) =>
-      prevPosts.map((oldPost) =>
-        putResponse.id === oldPost.id ? putResponse : oldPost
-      );
-
-    setPosts(updateModifiedPost);
     setSendPutRequest(false);
-    sendToast.success('Successfully updated post');
-    setEditMsg('');
-    nullPutPostResponse();
-  }, [putResponse, nullPutPostResponse]);
+  }, [clickedEditedPost]);
 
   // Render new posts if topic changes
   useEffect(() => {
@@ -164,9 +155,9 @@ const SingleTopicPage = () => {
       return;
     }
 
-    putPostRequest();
+    putPost.sendRequest();
     setClickedEditedPost(null);
-  }, [clickedEditedPost, putPostRequest, sendPutRequest]);
+  }, [clickedEditedPost, sendPutRequest, putPost]);
 
   // Vote error response from api
   useEffect(() => {
