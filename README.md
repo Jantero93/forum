@@ -4,6 +4,9 @@
 Boards, topics and posts can be readed by anyone, but you have to be registered to create new topics or posts.</p>
 <br>
 
+<font size=6>**Project is somewhat done, probably no new features incoming**</font>
+<font size=4>At least for some time I'm trying keep production link alive. And maybe fix some minor bugs.</font>
+
 > **Production link:** http://35.158.214.245/
 
 **Features coming:**
@@ -11,7 +14,7 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 - ~~Users can upvote posts~~ **Done**
 - ~~All tests run on pipeline~~ **Done**
 - ~~Users can edit posts in one hour from creation~~ **Done**
-- Images can be attached to posts
+- Images can be attached to posts **Probably never going for this**
 - ~~Long term goal: Put this application running on AWS or Azure~~ **Done** (AWS EC2)
 
 **On dev and local (docker) environments automatically is generated admin user for testing purposes**
