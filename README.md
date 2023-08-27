@@ -5,9 +5,11 @@ Boards, topics and posts can be readed by anyone, but you have to be registered 
 <br>
 
 <font size=6>**Project is somewhat done, probably no new features incoming**</font>
-<font size=4>At least for some time I'm trying keep production link alive. And maybe fix some minor bugs.</font>
+<font size=4>~~At least for some time I'm trying keep production link alive. And maybe fix some minor bugs.~~</font>
 
-> **Production link:** http://35.158.214.245/
+> **Production link:** ~~http://35.158.214.245/~~
+
+Due to costs, prod is down for now. App is easily tested with docker locally on own computer. Instructions on this page.
 
 **Features coming:**
 
