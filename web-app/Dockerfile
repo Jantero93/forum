@@ -1,9 +1,9 @@
 # build environment
-FROM node:18.16.0-alpine AS build
+FROM node:20-alpine3.17 AS build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json /app/
-RUN npm install -g npm@latest
+RUN npm install -g npm@10.1.0
 RUN npm ci --silent
 
 ARG VITE_APP_API_URL
